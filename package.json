@@ -1,7 +1,7 @@
 {
-  "name": "container-toolkit-template",
-  "version": "0.0.0",
-  "description": "Container template action using actions/toolkit",
+  "name": "pack-h5p-action",
+  "version": "0.0.1",
+  "description": "Pack a H5P content type and its dependencies to a .h5p file",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
@@ -10,26 +10,23 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/container-toolkit-template.git"
+    "url": "git+https://github.com/boyum/pack-h5p-action.git"
   },
   "keywords": [
     "actions",
-    "toolkit",
-    "setup",
     "h5p"
   ],
   "author": "GitHub",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/actions/container-toolkit-template/issues"
+    "url": "https://github.com/boyum/pack-h5p-action/issues"
   },
-  "homepage": "https://github.com/actions/container-toolkit-template#readme",
+  "homepage": "https://github.com/boyum/pack-h5p-action#readme",
   "dependencies": {
     "@actions/artifact": "^0.6.1",
     "@actions/core": "^1.6.0",
     "@actions/exec": "^1.1.0",
     "@actions/github": "^5.0.0",
-    "@actions/glob": "^0.2.0",
     "@actions/io": "^1.1.1",
     "@actions/tool-cache": "^1.7.1"
   },
