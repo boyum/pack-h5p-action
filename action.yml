@@ -1,6 +1,11 @@
 name: H5P Content Type Packer
 description: Pack a H5P content type and its dependencies to a .h5p file.
 author: boyum
+
+branding:
+  icon: package
+  color: blue
+
 inputs:
   h5p-dependency-list-file:
     description: H5P dependency list. A line break separated list of H5P repositories.
