@@ -38,7 +38,8 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const projectName = github_1.context.repo.repo;
-            yield (0, io_1.mkdirP)(projectName);
+            (0, core_1.info)(`Creating directory '${projectName}' in ${__dirname}`);
+            yield (0, io_1.mkdirP)(`${__dirname}/${projectName}`);
             yield moveAllFilesButDirectoryIntoDirectory(projectName);
             const fallbackDepListFilePath = "build_info/repos";
             const dependencyListFilePath = (_a = (0, core_1.getInput)(options.depListFilePath)) !== null && _a !== void 0 ? _a : fallbackDepListFilePath;
