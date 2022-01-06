@@ -20,12 +20,7 @@ async function run(): Promise<void> {
   try {
     const projectName = context.repo.repo;
     await mkdirP(projectName);
-
-    // Move everything into the project directory
-    // When doing this, the current project gets the
-    // same structure as the dependencies. This is
-    // crucial for the `h5p pack` command.
-    await exec(`mv '$(ls ./* | grep -v ./${projectName})' ./${projectName}`);
+    await moveAllFilesButDirectoryIntoDirectory(projectName);
 
     const fallbackDepListFilePath = "build_info/repos";
     const dependencyListFilePath =
@@ -69,6 +64,28 @@ async function run(): Promise<void> {
       setFailed((error as Object).toString());
     }
   }
+}
+
+async function moveAllFilesButDirectoryIntoDirectory(
+  destinationDirectory: string,
+): Promise<void> {
+  const contents = await fs.promises.readdir(__dirname);
+  const contentsExceptDestDir = contents.filter(
+    fileOrDir => fileOrDir !== destinationDirectory,
+  );
+
+  // Move everything into the project directory.
+  // When doing this, the current project gets the
+  // same structure as the dependencies. This is
+  // crucial for the `h5p pack` command.
+  await Promise.allSettled(
+    contentsExceptDestDir.map(async fileOrDir => {
+      await fs.promises.rename(
+        fileOrDir,
+        `${destinationDirectory}/${fileOrDir}`,
+      );
+    }),
+  );
 }
 
 async function cloneDependencies(
