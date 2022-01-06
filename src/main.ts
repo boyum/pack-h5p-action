@@ -1,10 +1,10 @@
-import { getInput, debug, setFailed, setOutput } from "@actions/core";
-import { context } from "@actions/github";
+import artifact from "@actions/artifact";
+import { debug, getInput, setFailed, setOutput } from "@actions/core";
 import { exec } from "@actions/exec";
+import { context } from "@actions/github";
 import { mkdirP } from "@actions/io";
 import fs from "fs";
 import { Library } from "./h5p/types/library";
-import artifact from "@actions/artifact";
 import { getFilename, getVersionString } from "./utils";
 
 const options = {
