@@ -19,7 +19,9 @@ const outputs = {
 async function run(): Promise<void> {
   try {
     const projectName = context.repo.repo;
-    await mkdirP(projectName);
+
+    info(`Creating directory '${projectName}' in ${__dirname}`);
+    await mkdirP(`${__dirname}/${projectName}`);
     await moveAllFilesButDirectoryIntoDirectory(projectName);
 
     const fallbackDepListFilePath = "build_info/repos";
