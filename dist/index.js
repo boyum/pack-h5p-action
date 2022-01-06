@@ -95,19 +95,25 @@ function moveAllFilesButDirectoryIntoDirectory(destinationDirectory) {
 }
 function cloneDependencies(dependencyListFilePath) {
     return __awaiter(this, void 0, void 0, function* () {
+        (0, core_1.info)(`Cloning dependencies from '${dependencyListFilePath}'`);
         yield (0, exec_1.exec)(`
-  while read -r repo
-  do
-    git clone \${repo}
-    echo "Repo: \${repo}"
+    ls -l
+  
+    while read -r repo
+    do
+      git clone \${repo}
+      echo "Repo: \${repo}"
 
-  done < ${dependencyListFilePath}
-`);
+    done < ${dependencyListFilePath}
+  `);
     });
 }
 function npmBuildProjects() {
     return __awaiter(this, void 0, void 0, function* () {
+        (0, core_1.info)("Building projects");
         yield (0, exec_1.exec)(`
+    ls -l
+  
     for dependency in */ ; do
       echo "Dependency name: \${dependency}"
 
@@ -125,7 +131,8 @@ function npmBuildProjects() {
 }
 function getLibraryContents(projectName) {
     return __awaiter(this, void 0, void 0, function* () {
-        const libraryPath = `${projectName}/library.json`;
+        (0, core_1.info)("Fetching library contents");
+        const libraryPath = `${__dirname}/${projectName}/library.json`;
         const libraryExists = fs_1.default.existsSync(libraryPath);
         if (!libraryExists) {
             (0, core_1.setFailed)(`Could not find \`${libraryPath}\`.`);
@@ -137,6 +144,7 @@ function getLibraryContents(projectName) {
 }
 function packH5P(filename) {
     return __awaiter(this, void 0, void 0, function* () {
+        (0, core_1.info)(`Packing H5P into file '${filename}'`);
         yield (0, exec_1.exec)(`
     npm install -g h5p
     h5p pack -r h5p-editor-topic-map ${filename}
@@ -146,6 +154,7 @@ function packH5P(filename) {
 }
 function archiveH5PPack(filename) {
     return __awaiter(this, void 0, void 0, function* () {
+        (0, core_1.info)(`Archiving H5P into file '${filename}'`);
         const artifactClient = artifact_1.default.create();
         yield artifactClient.uploadArtifact(filename, [filename], ".");
     });

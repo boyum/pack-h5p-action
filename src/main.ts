@@ -96,18 +96,25 @@ async function moveAllFilesButDirectoryIntoDirectory(
 async function cloneDependencies(
   dependencyListFilePath: string,
 ): Promise<void> {
+  info(`Cloning dependencies from '${dependencyListFilePath}'`);
   await exec(`
-  while read -r repo
-  do
-    git clone \${repo}
-    echo "Repo: \${repo}"
+    ls -l
+  
+    while read -r repo
+    do
+      git clone \${repo}
+      echo "Repo: \${repo}"
 
-  done < ${dependencyListFilePath}
-`);
+    done < ${dependencyListFilePath}
+  `);
 }
 
 async function npmBuildProjects(): Promise<void> {
+  info("Building projects");
+
   await exec(`
+    ls -l
+  
     for dependency in */ ; do
       echo "Dependency name: \${dependency}"
 
@@ -126,7 +133,9 @@ async function npmBuildProjects(): Promise<void> {
 async function getLibraryContents(
   projectName: string,
 ): Promise<Library | null> {
-  const libraryPath = `${projectName}/library.json`;
+  info("Fetching library contents");
+
+  const libraryPath = `${__dirname}/${projectName}/library.json`;
   const libraryExists = fs.existsSync(libraryPath);
   if (!libraryExists) {
     setFailed(`Could not find \`${libraryPath}\`.`);
@@ -140,6 +149,8 @@ async function getLibraryContents(
 }
 
 async function packH5P(filename: string): Promise<void> {
+  info(`Packing H5P into file '${filename}'`);
+
   await exec(`
     npm install -g h5p
     h5p pack -r h5p-editor-topic-map ${filename}
@@ -148,6 +159,8 @@ async function packH5P(filename: string): Promise<void> {
 }
 
 async function archiveH5PPack(filename: string): Promise<void> {
+  info(`Archiving H5P into file '${filename}'`);
+
   const artifactClient = artifact.create();
   await artifactClient.uploadArtifact(filename, [filename], ".");
 }
