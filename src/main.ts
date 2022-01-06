@@ -80,6 +80,7 @@ async function moveAllFilesButDirectoryIntoDirectory(
   // crucial for the `h5p pack` command.
   await Promise.all(
     contentsExceptDestDir.map(async fileOrDir => {
+      debug(`Moving ${fileOrDir} into ${destinationDirectory}`);
       await fs.promises.rename(
         fileOrDir,
         `${destinationDirectory}/${fileOrDir}`,
