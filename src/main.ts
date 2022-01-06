@@ -74,6 +74,8 @@ async function moveAllFilesButDirectoryIntoDirectory(
     fileOrDir => fileOrDir !== destinationDirectory,
   );
 
+  debug(`Contents: ${JSON.stringify(contents)}`);
+
   // Move everything into the project directory.
   // When doing this, the current project gets the
   // same structure as the dependencies. This is
