@@ -25,7 +25,7 @@ async function run(): Promise<void> {
     // When doing this, the current project gets the
     // same structure as the dependencies. This is
     // crucial for the `h5p pack` command.
-    await exec(`mv $(ls ./* | grep -v ./${projectName}) ./${projectName}`);
+    await exec(`mv '$(ls ./* | grep -v ./${projectName})' ./${projectName}`);
 
     const fallbackDepListFilePath = "build_info/repos";
     const dependencyListFilePath =
