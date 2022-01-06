@@ -86,8 +86,8 @@ async function moveAllFilesButDirectoryIntoDirectory(
     contentsExceptDestDir.map(async fileOrDir => {
       info(`Moving ${fileOrDir} into ${destinationDirectory}`);
       await fs.promises.rename(
-        fileOrDir,
-        `${destinationDirectory}/${fileOrDir}`,
+        `${__dirname}/${fileOrDir}`,
+        `${__dirname}/${destinationDirectory}/${fileOrDir}`,
       );
     }),
   );
