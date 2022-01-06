@@ -1,5 +1,5 @@
 import artifact from "@actions/artifact";
-import { debug, getInput, setFailed, setOutput } from "@actions/core";
+import { debug, getInput, setFailed, setOutput, info } from "@actions/core";
 import { exec } from "@actions/exec";
 import { context } from "@actions/github";
 import { mkdirP } from "@actions/io";
@@ -74,7 +74,7 @@ async function moveAllFilesButDirectoryIntoDirectory(
     fileOrDir => fileOrDir !== destinationDirectory,
   );
 
-  debug(`Contents: ${JSON.stringify(contents)}`);
+  info(`Contents: ${JSON.stringify(contents)}`);
 
   // Move everything into the project directory.
   // When doing this, the current project gets the
@@ -82,7 +82,7 @@ async function moveAllFilesButDirectoryIntoDirectory(
   // crucial for the `h5p pack` command.
   await Promise.all(
     contentsExceptDestDir.map(async fileOrDir => {
-      debug(`Moving ${fileOrDir} into ${destinationDirectory}`);
+      info(`Moving ${fileOrDir} into ${destinationDirectory}`);
       await fs.promises.rename(
         fileOrDir,
         `${destinationDirectory}/${fileOrDir}`,
