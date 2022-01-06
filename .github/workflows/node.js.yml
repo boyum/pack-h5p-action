@@ -2,20 +2,29 @@ name: Test and build
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-  test:
-    name: Test
+  test-code:
+    name: Test code
 
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - run: npm ci
-    - run: npm test
+      - uses: actions/checkout@v2
+      - run: npm ci
+      - run: npm test
+
+  test-action: # make sure the action works on a clean machine without building
+    name: Test action
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./
 
   build:
     name: Build
@@ -23,6 +32,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - run: npm ci
-    - run: npm run build --if-present
+      - uses: actions/checkout@v2
+      - run: npm ci
+      - run: npm run build --if-present
