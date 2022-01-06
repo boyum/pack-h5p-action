@@ -16,7 +16,7 @@ const outputs = {
   version: "version",
 };
 
-async function run() {
+async function run(): Promise<void> {
   try {
     const projectName = context.repo.repo;
     await mkdirP(projectName);
@@ -114,7 +114,7 @@ async function getLibraryContents(
   const libraryJson = (await fs.promises.readFile(libraryPath)).toString(
     "utf-8",
   );
-  return <Library>JSON.parse(libraryJson);
+  return JSON.parse(libraryJson) as Library;
 }
 
 async function packH5P(filename: string): Promise<void> {
