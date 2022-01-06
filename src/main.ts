@@ -78,7 +78,7 @@ async function moveAllFilesButDirectoryIntoDirectory(
   // When doing this, the current project gets the
   // same structure as the dependencies. This is
   // crucial for the `h5p pack` command.
-  await Promise.allSettled(
+  await Promise.all(
     contentsExceptDestDir.map(async fileOrDir => {
       await fs.promises.rename(
         fileOrDir,
