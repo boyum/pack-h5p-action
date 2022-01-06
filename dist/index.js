@@ -43,7 +43,7 @@ function run() {
             // When doing this, the current project gets the
             // same structure as the dependencies. This is
             // crucial for the `h5p pack` command.
-            yield (0, exec_1.exec)(`mv $(ls ./* | grep -v ./${projectName}) ./${projectName}`);
+            yield (0, exec_1.exec)(`mv '$(ls ./* | grep -v ./${projectName})' ./${projectName}`);
             const fallbackDepListFilePath = "build_info/repos";
             const dependencyListFilePath = (_a = (0, core_1.getInput)(options.depListFilePath)) !== null && _a !== void 0 ? _a : fallbackDepListFilePath;
             const useFallbackDepListFilePath = fallbackDepListFilePath === dependencyListFilePath;
