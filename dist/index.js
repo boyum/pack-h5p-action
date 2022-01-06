@@ -39,11 +39,7 @@ function run() {
         try {
             const projectName = github_1.context.repo.repo;
             yield (0, io_1.mkdirP)(projectName);
-            // Move everything into the project directory
-            // When doing this, the current project gets the
-            // same structure as the dependencies. This is
-            // crucial for the `h5p pack` command.
-            yield (0, exec_1.exec)(`mv '$(ls ./* | grep -v ./${projectName})' ./${projectName}`);
+            yield moveAllFilesButDirectoryIntoDirectory(projectName);
             const fallbackDepListFilePath = "build_info/repos";
             const dependencyListFilePath = (_a = (0, core_1.getInput)(options.depListFilePath)) !== null && _a !== void 0 ? _a : fallbackDepListFilePath;
             const useFallbackDepListFilePath = fallbackDepListFilePath === dependencyListFilePath;
@@ -79,6 +75,19 @@ function run() {
                 (0, core_1.setFailed)(error.toString());
             }
         }
+    });
+}
+function moveAllFilesButDirectoryIntoDirectory(destinationDirectory) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const contents = yield fs_1.default.promises.readdir(__dirname);
+        const contentsExceptDestDir = contents.filter(fileOrDir => fileOrDir !== destinationDirectory);
+        // Move everything into the project directory.
+        // When doing this, the current project gets the
+        // same structure as the dependencies. This is
+        // crucial for the `h5p pack` command.
+        yield Promise.allSettled(contentsExceptDestDir.map((fileOrDir) => __awaiter(this, void 0, void 0, function* () {
+            yield fs_1.default.promises.rename(fileOrDir, `${destinationDirectory}/${fileOrDir}`);
+        })));
     });
 }
 function cloneDependencies(dependencyListFilePath) {
