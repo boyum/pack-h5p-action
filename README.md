@@ -49,7 +49,6 @@ jobs:
       - uses: boyum/pack-h5p-action
         with:
           h5p-dependency-list-file: h5p-dependencies.txt
-          
 ```
 
 ### Release after pack
