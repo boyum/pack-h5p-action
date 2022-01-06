@@ -85,7 +85,7 @@ function moveAllFilesButDirectoryIntoDirectory(destinationDirectory) {
         // When doing this, the current project gets the
         // same structure as the dependencies. This is
         // crucial for the `h5p pack` command.
-        yield Promise.allSettled(contentsExceptDestDir.map((fileOrDir) => __awaiter(this, void 0, void 0, function* () {
+        yield Promise.all(contentsExceptDestDir.map((fileOrDir) => __awaiter(this, void 0, void 0, function* () {
             yield fs_1.default.promises.rename(fileOrDir, `${destinationDirectory}/${fileOrDir}`);
         })));
     });
