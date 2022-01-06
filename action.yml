@@ -1,10 +1,12 @@
-name: 'Container Action Template'
-description: 'Get started with Container actions'
-author: 'GitHub'
-inputs: 
-  myInput:
-    description: 'Input to use'
-    default: 'world'
+name: H5P Content Type Packer
+description: Pack a H5P content type and its dependencies to a .h5p file.
+author: boyum
+inputs:
+  h5p-dependency-list-file:
+    description: H5P dependency list. A line break separated list of H5P repositories.
+    default: build_info/repos
+    required: false
+
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
+  using: node16
+  main: lib/main.js
