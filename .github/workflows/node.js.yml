@@ -7,6 +7,26 @@ on:
     branches: [main]
 
 jobs:
+  check-format:
+    name: Check format
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm ci
+      - run: npm format-check
+
+  check-lint:
+    name: Check lint
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm ci
+      - run: npm lint-check
+
   test-code:
     name: Test code
 
@@ -34,4 +54,5 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: npm ci
-      - run: npm run all
+      - run: npm run build
+      - run: npm run package
