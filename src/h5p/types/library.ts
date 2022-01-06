@@ -5,11 +5,11 @@ export type Library = {
   minorVersion: number;
   patchVersion: number;
   runnable?: number;
-  preloadedJs?: Array<{path: string}>;
-  preloadedCss?: Array<{path: string}>;
-  preloadedDependencies?: Array<{
+  preloadedJs?: { path: string }[];
+  preloadedCss?: { path: string }[];
+  preloadedDependencies?: {
     machineName: string;
     majorVersion: number;
     minorVersion: number;
-  }>;
+  }[];
 };
