@@ -33,7 +33,7 @@ async function run(): Promise<void> {
 
     const dependencyListFileExists = fs.existsSync(dependencyListFilePath);
     if (dependencyListFileExists) {
-      cloneDependencies(dependencyListFilePath);
+      cloneDependencies(projectName, dependencyListFilePath);
     } else if (useFallbackDepListFilePath) {
       debug(`Could not find an H5P dependency file.`);
     } else {
@@ -53,7 +53,7 @@ async function run(): Promise<void> {
 
     const version = getVersionString(library);
     const filename = getFilename(projectName, version);
-    await packH5P(filename);
+    await packH5P(projectName, filename);
 
     await archiveH5PPack(filename);
 
@@ -94,40 +94,41 @@ async function moveAllFilesButDirectoryIntoDirectory(
 }
 
 async function cloneDependencies(
+  projectName: string,
   dependencyListFilePath: string,
 ): Promise<void> {
   info(`Cloning dependencies from '${dependencyListFilePath}'`);
-  await exec(`
-    ls -l
-  
-    while read -r repo
-    do
-      git clone \${repo}
-      echo "Repo: \${repo}"
 
-    done < ${dependencyListFilePath}
-  `);
+  const dependencyFile = (
+    await fs.promises.readFile(
+      `${__dirname}/${projectName}/dependencyListFilePath`,
+    )
+  ).toString("utf-8");
+
+  const dependencies = dependencyFile.split("\n");
+  info(`Dependencies: ${JSON.stringify(dependencies)}`);
+
+  Promise.all(
+    dependencies.map(async dependency => {
+      await exec(`git clone ${dependency}`);
+    }),
+  );
 }
 
 async function npmBuildProjects(): Promise<void> {
   info("Building projects");
 
-  await exec(`
-    ls -l
-  
-    for dependency in */ ; do
-      echo "Dependency name: \${dependency}"
-
-      # Check if the project is actually a Node project and can be built
-      if test -f "\${dependency}package.json"
-      then 
-        pushd \${dependency}
-        npm install
-        npm run build --if-present
-        popd
-      fi
-    done
-  `);
+  const projects = await fs.promises.readdir(__dirname);
+  for (const project of projects) {
+    const projectPath = `${__dirname}/${project}`;
+    const isNodeProject = fs.existsSync(`${projectPath}/package.json`);
+    if (isNodeProject) {
+      await exec(`pushd ${project}`);
+      await exec("npm install");
+      await exec("npm run build --if-present");
+      await exec("popd");
+    }
+  }
 }
 
 async function getLibraryContents(
@@ -148,14 +149,12 @@ async function getLibraryContents(
   return JSON.parse(libraryJson) as Library;
 }
 
-async function packH5P(filename: string): Promise<void> {
+async function packH5P(projectName: string, filename: string): Promise<void> {
   info(`Packing H5P into file '${filename}'`);
 
-  await exec(`
-    npm install -g h5p
-    h5p pack -r h5p-editor-topic-map ${filename}
-    h5p validate ${filename}
-  `);
+  await exec("npm install -g h5p");
+  await exec(`h5p pack -r ${projectName} ${filename}`);
+  await exec(`h5p validate ${filename}`);
 }
 
 async function archiveH5PPack(filename: string): Promise<void> {

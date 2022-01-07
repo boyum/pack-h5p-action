@@ -46,7 +46,7 @@ function run() {
             const useFallbackDepListFilePath = fallbackDepListFilePath === dependencyListFilePath;
             const dependencyListFileExists = fs_1.default.existsSync(dependencyListFilePath);
             if (dependencyListFileExists) {
-                cloneDependencies(dependencyListFilePath);
+                cloneDependencies(projectName, dependencyListFilePath);
             }
             else if (useFallbackDepListFilePath) {
                 (0, core_1.debug)(`Could not find an H5P dependency file.`);
@@ -63,7 +63,7 @@ function run() {
             }
             const version = (0, utils_1.getVersionString)(library);
             const filename = (0, utils_1.getFilename)(projectName, version);
-            yield packH5P(filename);
+            yield packH5P(projectName, filename);
             yield archiveH5PPack(filename);
             (0, core_1.setOutput)(outputs.filePath, filename);
             (0, core_1.setOutput)(outputs.version, version);
@@ -93,40 +93,31 @@ function moveAllFilesButDirectoryIntoDirectory(destinationDirectory) {
         })));
     });
 }
-function cloneDependencies(dependencyListFilePath) {
+function cloneDependencies(projectName, dependencyListFilePath) {
     return __awaiter(this, void 0, void 0, function* () {
         (0, core_1.info)(`Cloning dependencies from '${dependencyListFilePath}'`);
-        yield (0, exec_1.exec)(`
-    ls -l
-  
-    while read -r repo
-    do
-      git clone \${repo}
-      echo "Repo: \${repo}"
-
-    done < ${dependencyListFilePath}
-  `);
+        const dependencyFile = (yield fs_1.default.promises.readFile(`${__dirname}/${projectName}/dependencyListFilePath`)).toString("utf-8");
+        const dependencies = dependencyFile.split("\n");
+        (0, core_1.info)(`Dependencies: ${JSON.stringify(dependencies)}`);
+        Promise.all(dependencies.map((dependency) => __awaiter(this, void 0, void 0, function* () {
+            yield (0, exec_1.exec)(`git clone ${dependency}`);
+        })));
     });
 }
 function npmBuildProjects() {
     return __awaiter(this, void 0, void 0, function* () {
         (0, core_1.info)("Building projects");
-        yield (0, exec_1.exec)(`
-    ls -l
-  
-    for dependency in */ ; do
-      echo "Dependency name: \${dependency}"
-
-      # Check if the project is actually a Node project and can be built
-      if test -f "\${dependency}package.json"
-      then 
-        pushd \${dependency}
-        npm install
-        npm run build --if-present
-        popd
-      fi
-    done
-  `);
+        const projects = yield fs_1.default.promises.readdir(__dirname);
+        for (const project of projects) {
+            const projectPath = `${__dirname}/${project}`;
+            const isNodeProject = fs_1.default.existsSync(`${projectPath}/package.json`);
+            if (isNodeProject) {
+                yield (0, exec_1.exec)(`pushd ${project}`);
+                yield (0, exec_1.exec)("npm install");
+                yield (0, exec_1.exec)("npm run build --if-present");
+                yield (0, exec_1.exec)("popd");
+            }
+        }
     });
 }
 function getLibraryContents(projectName) {
@@ -142,14 +133,12 @@ function getLibraryContents(projectName) {
         return JSON.parse(libraryJson);
     });
 }
-function packH5P(filename) {
+function packH5P(projectName, filename) {
     return __awaiter(this, void 0, void 0, function* () {
         (0, core_1.info)(`Packing H5P into file '${filename}'`);
-        yield (0, exec_1.exec)(`
-    npm install -g h5p
-    h5p pack -r h5p-editor-topic-map ${filename}
-    h5p validate ${filename}
-  `);
+        yield (0, exec_1.exec)("npm install -g h5p");
+        yield (0, exec_1.exec)(`h5p pack -r ${projectName} ${filename}`);
+        yield (0, exec_1.exec)(`h5p validate ${filename}`);
     });
 }
 function archiveH5PPack(filename) {
