@@ -1,14 +1,16 @@
 import artifact from "@actions/artifact";
-import { debug, getInput, setFailed, setOutput, info } from "@actions/core";
+import { debug, getInput, info, setFailed, setOutput } from "@actions/core";
 import { exec } from "@actions/exec";
 import { context } from "@actions/github";
 import { mkdirP } from "@actions/io";
 import fs from "fs";
+import path from "path";
 import { Library } from "./h5p/types/library";
 import { getFilename, getVersionString } from "./utils";
 
 const options = {
   depListFilePath: "h5p-dependency-list-file",
+  workingDirectory: "working-directory",
 };
 
 const outputs = {
@@ -18,11 +20,13 @@ const outputs = {
 
 async function run(): Promise<void> {
   try {
+    const workingDirectory = getInput(options.workingDirectory) ?? "";
     const projectName = context.repo.repo;
+    const rootDir = path.join(__dirname, workingDirectory);
 
-    info(`Creating directory '${projectName}' in ${__dirname}`);
-    await mkdirP(`${__dirname}/${projectName}`);
-    await moveAllFilesButDirectoryIntoDirectory(projectName);
+    info(`Creating directory '${projectName}' in ${rootDir}`);
+    await mkdirP(`${rootDir}/${projectName}`);
+    await moveAllFilesButDirectoryIntoDirectory(rootDir, projectName);
 
     const fallbackDepListFilePath = "build_info/repos";
     const dependencyListFilePath =
@@ -33,7 +37,7 @@ async function run(): Promise<void> {
 
     const dependencyListFileExists = fs.existsSync(dependencyListFilePath);
     if (dependencyListFileExists) {
-      cloneDependencies(projectName, dependencyListFilePath);
+      cloneDependencies(projectName, rootDir, dependencyListFilePath);
     } else if (useFallbackDepListFilePath) {
       debug(`Could not find an H5P dependency file.`);
     } else {
@@ -44,9 +48,9 @@ async function run(): Promise<void> {
       return;
     }
 
-    await npmBuildProjects();
+    await npmBuildProjects(rootDir);
 
-    const library = await getLibraryContents(projectName);
+    const library = await getLibraryContents(rootDir, projectName);
     if (!library) {
       return;
     }
@@ -69,9 +73,10 @@ async function run(): Promise<void> {
 }
 
 async function moveAllFilesButDirectoryIntoDirectory(
+  rootDir: string,
   destinationDirectory: string,
 ): Promise<void> {
-  const contents = await fs.promises.readdir(__dirname);
+  const contents = await fs.promises.readdir(rootDir);
   const contentsExceptDestDir = contents.filter(
     fileOrDir => fileOrDir !== destinationDirectory,
   );
@@ -86,8 +91,8 @@ async function moveAllFilesButDirectoryIntoDirectory(
     contentsExceptDestDir.map(async fileOrDir => {
       info(`Moving ${fileOrDir} into ${destinationDirectory}`);
       await fs.promises.rename(
-        `${__dirname}/${fileOrDir}`,
-        `${__dirname}/${destinationDirectory}/${fileOrDir}`,
+        `${rootDir}/${fileOrDir}`,
+        `${rootDir}/${destinationDirectory}/${fileOrDir}`,
       );
     }),
   );
@@ -95,13 +100,14 @@ async function moveAllFilesButDirectoryIntoDirectory(
 
 async function cloneDependencies(
   projectName: string,
+  rootDir: string,
   dependencyListFilePath: string,
 ): Promise<void> {
   info(`Cloning dependencies from '${dependencyListFilePath}'`);
 
   const dependencyFile = (
     await fs.promises.readFile(
-      `${__dirname}/${projectName}/dependencyListFilePath`,
+      `${rootDir}/${projectName}/dependencyListFilePath`,
     )
   ).toString("utf-8");
 
@@ -115,12 +121,12 @@ async function cloneDependencies(
   );
 }
 
-async function npmBuildProjects(): Promise<void> {
+async function npmBuildProjects(rootDir: string): Promise<void> {
   info("Building projects");
 
-  const projects = await fs.promises.readdir(__dirname);
+  const projects = await fs.promises.readdir(rootDir);
   for (const project of projects) {
-    const projectPath = `${__dirname}/${project}`;
+    const projectPath = `${rootDir}/${project}`;
     const isNodeProject = fs.existsSync(`${projectPath}/package.json`);
     if (isNodeProject) {
       await exec(`pushd ${project}`);
@@ -132,11 +138,12 @@ async function npmBuildProjects(): Promise<void> {
 }
 
 async function getLibraryContents(
+  rootDir: string,
   projectName: string,
 ): Promise<Library | null> {
   info("Fetching library contents");
 
-  const libraryPath = `${__dirname}/${projectName}/library.json`;
+  const libraryPath = `${rootDir}/${projectName}/library.json`;
   const libraryExists = fs.existsSync(libraryPath);
   if (!libraryExists) {
     setFailed(`Could not find \`${libraryPath}\`.`);

@@ -25,28 +25,32 @@ const exec_1 = __nccwpck_require__(1514);
 const github_1 = __nccwpck_require__(5438);
 const io_1 = __nccwpck_require__(7436);
 const fs_1 = __importDefault(__nccwpck_require__(5747));
+const path_1 = __importDefault(__nccwpck_require__(5622));
 const utils_1 = __nccwpck_require__(918);
 const options = {
     depListFilePath: "h5p-dependency-list-file",
+    workingDirectory: "working-directory",
 };
 const outputs = {
     filePath: "filePath",
     version: "version",
 };
 function run() {
-    var _a;
+    var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            const workingDirectory = (_a = (0, core_1.getInput)(options.workingDirectory)) !== null && _a !== void 0 ? _a : "";
             const projectName = github_1.context.repo.repo;
-            (0, core_1.info)(`Creating directory '${projectName}' in ${__dirname}`);
-            yield (0, io_1.mkdirP)(`${__dirname}/${projectName}`);
-            yield moveAllFilesButDirectoryIntoDirectory(projectName);
+            const rootDir = path_1.default.join(__dirname, workingDirectory);
+            (0, core_1.info)(`Creating directory '${projectName}' in ${rootDir}`);
+            yield (0, io_1.mkdirP)(`${rootDir}/${projectName}`);
+            yield moveAllFilesButDirectoryIntoDirectory(rootDir, projectName);
             const fallbackDepListFilePath = "build_info/repos";
-            const dependencyListFilePath = (_a = (0, core_1.getInput)(options.depListFilePath)) !== null && _a !== void 0 ? _a : fallbackDepListFilePath;
+            const dependencyListFilePath = (_b = (0, core_1.getInput)(options.depListFilePath)) !== null && _b !== void 0 ? _b : fallbackDepListFilePath;
             const useFallbackDepListFilePath = fallbackDepListFilePath === dependencyListFilePath;
             const dependencyListFileExists = fs_1.default.existsSync(dependencyListFilePath);
             if (dependencyListFileExists) {
-                cloneDependencies(projectName, dependencyListFilePath);
+                cloneDependencies(projectName, rootDir, dependencyListFilePath);
             }
             else if (useFallbackDepListFilePath) {
                 (0, core_1.debug)(`Could not find an H5P dependency file.`);
@@ -56,8 +60,8 @@ function run() {
          If it doesn't exist, please remove \`${options.depListFilePath}\` from the configuration.`);
                 return;
             }
-            yield npmBuildProjects();
-            const library = yield getLibraryContents(projectName);
+            yield npmBuildProjects(rootDir);
+            const library = yield getLibraryContents(rootDir, projectName);
             if (!library) {
                 return;
             }
@@ -78,9 +82,9 @@ function run() {
         }
     });
 }
-function moveAllFilesButDirectoryIntoDirectory(destinationDirectory) {
+function moveAllFilesButDirectoryIntoDirectory(rootDir, destinationDirectory) {
     return __awaiter(this, void 0, void 0, function* () {
-        const contents = yield fs_1.default.promises.readdir(__dirname);
+        const contents = yield fs_1.default.promises.readdir(rootDir);
         const contentsExceptDestDir = contents.filter(fileOrDir => fileOrDir !== destinationDirectory);
         (0, core_1.info)(`Contents: ${JSON.stringify(contents)}`);
         // Move everything into the project directory.
@@ -89,14 +93,14 @@ function moveAllFilesButDirectoryIntoDirectory(destinationDirectory) {
         // crucial for the `h5p pack` command.
         yield Promise.all(contentsExceptDestDir.map((fileOrDir) => __awaiter(this, void 0, void 0, function* () {
             (0, core_1.info)(`Moving ${fileOrDir} into ${destinationDirectory}`);
-            yield fs_1.default.promises.rename(`${__dirname}/${fileOrDir}`, `${__dirname}/${destinationDirectory}/${fileOrDir}`);
+            yield fs_1.default.promises.rename(`${rootDir}/${fileOrDir}`, `${rootDir}/${destinationDirectory}/${fileOrDir}`);
         })));
     });
 }
-function cloneDependencies(projectName, dependencyListFilePath) {
+function cloneDependencies(projectName, rootDir, dependencyListFilePath) {
     return __awaiter(this, void 0, void 0, function* () {
         (0, core_1.info)(`Cloning dependencies from '${dependencyListFilePath}'`);
-        const dependencyFile = (yield fs_1.default.promises.readFile(`${__dirname}/${projectName}/dependencyListFilePath`)).toString("utf-8");
+        const dependencyFile = (yield fs_1.default.promises.readFile(`${rootDir}/${projectName}/dependencyListFilePath`)).toString("utf-8");
         const dependencies = dependencyFile.split("\n");
         (0, core_1.info)(`Dependencies: ${JSON.stringify(dependencies)}`);
         Promise.all(dependencies.map((dependency) => __awaiter(this, void 0, void 0, function* () {
@@ -104,12 +108,12 @@ function cloneDependencies(projectName, dependencyListFilePath) {
         })));
     });
 }
-function npmBuildProjects() {
+function npmBuildProjects(rootDir) {
     return __awaiter(this, void 0, void 0, function* () {
         (0, core_1.info)("Building projects");
-        const projects = yield fs_1.default.promises.readdir(__dirname);
+        const projects = yield fs_1.default.promises.readdir(rootDir);
         for (const project of projects) {
-            const projectPath = `${__dirname}/${project}`;
+            const projectPath = `${rootDir}/${project}`;
             const isNodeProject = fs_1.default.existsSync(`${projectPath}/package.json`);
             if (isNodeProject) {
                 yield (0, exec_1.exec)(`pushd ${project}`);
@@ -120,10 +124,10 @@ function npmBuildProjects() {
         }
     });
 }
-function getLibraryContents(projectName) {
+function getLibraryContents(rootDir, projectName) {
     return __awaiter(this, void 0, void 0, function* () {
         (0, core_1.info)("Fetching library contents");
-        const libraryPath = `${__dirname}/${projectName}/library.json`;
+        const libraryPath = `${rootDir}/${projectName}/library.json`;
         const libraryExists = fs_1.default.existsSync(libraryPath);
         if (!libraryExists) {
             (0, core_1.setFailed)(`Could not find \`${libraryPath}\`.`);

@@ -1,0 +1,11 @@
+{
+  "title": "My Lib",
+  "machineName": "MyLib",
+  "majorVersion": 1,
+  "minorVersion": 0,
+  "patchVersion": 0,
+  "runnable": 1,
+  "preloadedJs": [
+    {"path": "mylib.js"}
+  ]
+}
