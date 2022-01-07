@@ -12,6 +12,11 @@ inputs:
     default: build_info/repos
     required: false
 
+  working-directory:
+    description: The directory where `library.json` is found.
+    default: "."
+    required: false
+
 runs:
   using: node12
   main: dist/index.js
