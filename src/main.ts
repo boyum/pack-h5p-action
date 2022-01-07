@@ -24,8 +24,8 @@ async function run(): Promise<void> {
     const projectName = context.repo.repo;
     const rootDir = path.join(__dirname, workingDirectory);
 
-    info(`Creating directory '${projectName}' in ${rootDir}`);
-    await mkdirP(`${rootDir}/${projectName}`);
+    debug(`Creating directory '${projectName}' in ${rootDir}`);
+    await mkdirP(path.join(rootDir, projectName));
     await moveAllFilesButDirectoryIntoDirectory(rootDir, projectName);
 
     const fallbackDepListFilePath = "build_info/repos";
@@ -35,7 +35,9 @@ async function run(): Promise<void> {
     const useFallbackDepListFilePath =
       fallbackDepListFilePath === dependencyListFilePath;
 
-    const dependencyListFileExists = fs.existsSync(dependencyListFilePath);
+    const dependencyListFileExists = fs.existsSync(
+      path.join(rootDir, dependencyListFilePath),
+    );
     if (dependencyListFileExists) {
       cloneDependencies(projectName, rootDir, dependencyListFilePath);
     } else if (useFallbackDepListFilePath) {
@@ -81,7 +83,7 @@ async function moveAllFilesButDirectoryIntoDirectory(
     fileOrDir => fileOrDir !== destinationDirectory,
   );
 
-  info(`Contents: ${JSON.stringify(contents)}`);
+  debug(`Contents: ${JSON.stringify(contents)}`);
 
   // Move everything into the project directory.
   // When doing this, the current project gets the
@@ -89,7 +91,7 @@ async function moveAllFilesButDirectoryIntoDirectory(
   // crucial for the `h5p pack` command.
   await Promise.all(
     contentsExceptDestDir.map(async fileOrDir => {
-      info(`Moving ${fileOrDir} into ${destinationDirectory}`);
+      debug(`Moving ${fileOrDir} into ${destinationDirectory}`);
       await fs.promises.rename(
         `${rootDir}/${fileOrDir}`,
         `${rootDir}/${destinationDirectory}/${fileOrDir}`,
@@ -103,7 +105,7 @@ async function cloneDependencies(
   rootDir: string,
   dependencyListFilePath: string,
 ): Promise<void> {
-  info(`Cloning dependencies from '${dependencyListFilePath}'`);
+  debug(`Cloning dependencies from '${dependencyListFilePath}'`);
 
   const dependencyFile = (
     await fs.promises.readFile(
@@ -112,7 +114,7 @@ async function cloneDependencies(
   ).toString("utf-8");
 
   const dependencies = dependencyFile.split("\n");
-  info(`Dependencies: ${JSON.stringify(dependencies)}`);
+  debug(`Dependencies: ${JSON.stringify(dependencies)}`);
 
   Promise.all(
     dependencies.map(async dependency => {
@@ -122,7 +124,7 @@ async function cloneDependencies(
 }
 
 async function npmBuildProjects(rootDir: string): Promise<void> {
-  info("Building projects");
+  debug("Building projects");
 
   const projects = await fs.promises.readdir(rootDir);
   for (const project of projects) {
@@ -141,7 +143,12 @@ async function getLibraryContents(
   rootDir: string,
   projectName: string,
 ): Promise<Library | null> {
-  info("Fetching library contents");
+  debug("Fetching library contents");
+  debug(
+    `Contents in root/project: ${await fs.promises.readdir(
+      path.join(rootDir, projectName),
+    )}`,
+  );
 
   const libraryPath = `${rootDir}/${projectName}/library.json`;
   const libraryExists = fs.existsSync(libraryPath);
@@ -157,7 +164,7 @@ async function getLibraryContents(
 }
 
 async function packH5P(projectName: string, filename: string): Promise<void> {
-  info(`Packing H5P into file '${filename}'`);
+  debug(`Packing H5P into file '${filename}'`);
 
   await exec("npm install -g h5p");
   await exec(`h5p pack -r ${projectName} ${filename}`);
@@ -165,7 +172,7 @@ async function packH5P(projectName: string, filename: string): Promise<void> {
 }
 
 async function archiveH5PPack(filename: string): Promise<void> {
-  info(`Archiving H5P into file '${filename}'`);
+  debug(`Archiving H5P into file '${filename}'`);
 
   const artifactClient = artifact.create();
   await artifactClient.uploadArtifact(filename, [filename], ".");
