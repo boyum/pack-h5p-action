@@ -1,5 +1,5 @@
-import artifact from "@actions/artifact";
-import { debug, getInput, info, setFailed, setOutput } from "@actions/core";
+import { create as createArtifactClient } from "@actions/artifact";
+import { debug, getInput, setFailed, setOutput } from "@actions/core";
 import { exec } from "@actions/exec";
 import { context } from "@actions/github";
 import { mkdirP } from "@actions/io";
@@ -59,9 +59,9 @@ async function run(): Promise<void> {
 
     const version = getVersionString(library);
     const filename = getFilename(projectName, version);
-    await packH5P(projectName, filename);
+    await packH5P(projectName, filename, rootDir);
 
-    await archiveH5PPack(filename);
+    await archiveH5PPack(filename, rootDir);
 
     setOutput(outputs.filePath, filename);
     setOutput(outputs.version, version);
@@ -124,9 +124,9 @@ async function cloneDependencies(
 }
 
 async function npmBuildProjects(rootDir: string): Promise<void> {
-  debug("Building projects");
-
   const projects = await fs.promises.readdir(rootDir);
+  debug(`Building projects: ${projects}`);
+
   for (const project of projects) {
     const projectPath = `${rootDir}/${project}`;
     const isNodeProject = fs.existsSync(`${projectPath}/package.json`);
@@ -163,19 +163,32 @@ async function getLibraryContents(
   return JSON.parse(libraryJson) as Library;
 }
 
-async function packH5P(projectName: string, filename: string): Promise<void> {
+async function packH5P(
+  projectName: string,
+  filename: string,
+  rootDir: string,
+): Promise<void> {
   debug(`Packing H5P into file '${filename}'`);
 
   await exec("npm install -g h5p");
-  await exec(`h5p pack -r ${projectName} ${filename}`);
-  await exec(`h5p validate ${filename}`);
+  await exec(`h5p pack -r ${projectName} ${filename}`, undefined, {
+    cwd: rootDir,
+  });
+  await exec(`h5p validate ${filename}`, undefined, { cwd: rootDir });
 }
 
-async function archiveH5PPack(filename: string): Promise<void> {
+async function archiveH5PPack(
+  filename: string,
+  rootDir: string,
+): Promise<void> {
   debug(`Archiving H5P into file '${filename}'`);
 
-  const artifactClient = artifact.create();
-  await artifactClient.uploadArtifact(filename, [filename], ".");
+  const artifactClient = createArtifactClient();
+  await artifactClient.uploadArtifact(
+    filename,
+    [path.join(rootDir, filename)],
+    ".",
+  );
 }
 
 run();

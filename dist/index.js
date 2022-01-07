@@ -19,7 +19,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const artifact_1 = __importDefault(__nccwpck_require__(2605));
+const artifact_1 = __nccwpck_require__(2605);
 const core_1 = __nccwpck_require__(2186);
 const exec_1 = __nccwpck_require__(1514);
 const github_1 = __nccwpck_require__(5438);
@@ -67,8 +67,8 @@ function run() {
             }
             const version = (0, utils_1.getVersionString)(library);
             const filename = (0, utils_1.getFilename)(projectName, version);
-            yield packH5P(projectName, filename);
-            yield archiveH5PPack(filename);
+            yield packH5P(projectName, filename, rootDir);
+            yield archiveH5PPack(filename, rootDir);
             (0, core_1.setOutput)(outputs.filePath, filename);
             (0, core_1.setOutput)(outputs.version, version);
         }
@@ -110,8 +110,8 @@ function cloneDependencies(projectName, rootDir, dependencyListFilePath) {
 }
 function npmBuildProjects(rootDir) {
     return __awaiter(this, void 0, void 0, function* () {
-        (0, core_1.debug)("Building projects");
         const projects = yield fs_1.default.promises.readdir(rootDir);
+        (0, core_1.debug)(`Building projects: ${projects}`);
         for (const project of projects) {
             const projectPath = `${rootDir}/${project}`;
             const isNodeProject = fs_1.default.existsSync(`${projectPath}/package.json`);
@@ -138,19 +138,22 @@ function getLibraryContents(rootDir, projectName) {
         return JSON.parse(libraryJson);
     });
 }
-function packH5P(projectName, filename) {
+function packH5P(projectName, filename, rootDir) {
     return __awaiter(this, void 0, void 0, function* () {
         (0, core_1.debug)(`Packing H5P into file '${filename}'`);
         yield (0, exec_1.exec)("npm install -g h5p");
-        yield (0, exec_1.exec)(`h5p pack -r ${projectName} ${filename}`);
-        yield (0, exec_1.exec)(`h5p validate ${filename}`);
+        yield (0, exec_1.exec)(`h5p pack -r ${projectName} ${filename}`, undefined, {
+            cwd: rootDir,
+        });
+        yield (0, exec_1.exec)(`h5p validate ${filename}`, undefined, { cwd: rootDir });
+        yield (0, exec_1.exec)("ls -l", undefined, { cwd: rootDir });
     });
 }
-function archiveH5PPack(filename) {
+function archiveH5PPack(filename, rootDir) {
     return __awaiter(this, void 0, void 0, function* () {
         (0, core_1.debug)(`Archiving H5P into file '${filename}'`);
-        const artifactClient = artifact_1.default.create();
-        yield artifactClient.uploadArtifact(filename, [filename], ".");
+        const artifactClient = (0, artifact_1.create)();
+        yield artifactClient.uploadArtifact(filename, [path_1.default.join(rootDir, filename)], ".");
     });
 }
 run();
