@@ -41,9 +41,15 @@ function run() {
         try {
             const workingDirectory = (_a = (0, core_1.getInput)(options.workingDirectory)) !== null && _a !== void 0 ? _a : "";
             const projectName = github_1.context.repo.repo;
-            const rootDir = path_1.default.join(__dirname, workingDirectory);
+            const rootDir = path_1.default.join(workingDirectory);
             (0, core_1.info)(`Creating directory '${projectName}' in ${rootDir}`);
             yield (0, io_1.mkdirP)(path_1.default.join(rootDir, projectName));
+            // if (isDebug()) {
+            //   initDebugDirectory(
+            //     path.join(__dirname, "demo"),
+            //     path.join(workingDirectory, projectName),
+            //   );
+            // }
             yield moveAllFilesButDirectoryIntoDirectory(rootDir, projectName);
             const fallbackDepListFilePath = "build_info/repos";
             const dependencyListFilePath = (_b = (0, core_1.getInput)(options.depListFilePath)) !== null && _b !== void 0 ? _b : fallbackDepListFilePath;
@@ -154,6 +160,11 @@ function archiveH5PPack(filename, rootDir) {
         (0, core_1.info)(`Archiving H5P into file '${filename}'`);
         const artifactClient = (0, artifact_1.create)();
         yield artifactClient.uploadArtifact(filename, [path_1.default.join(rootDir, filename)], ".");
+    });
+}
+function initDebugDirectory(rootDir, distDir) {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield fs_1.default.promises.rename(rootDir, path_1.default.join(distDir, rootDir));
     });
 }
 run();

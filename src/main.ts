@@ -22,7 +22,7 @@ async function run(): Promise<void> {
   try {
     const workingDirectory = getInput(options.workingDirectory) ?? "";
     const projectName = context.repo.repo;
-    const rootDir = path.join(__dirname, workingDirectory);
+    const rootDir = path.join(workingDirectory);
 
     info(`Creating directory '${projectName}' in ${rootDir}`);
     await mkdirP(path.join(rootDir, projectName));
