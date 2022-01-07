@@ -1,5 +1,5 @@
 import { create as createArtifactClient } from "@actions/artifact";
-import { info, getInput, setFailed, setOutput } from "@actions/core";
+import { getInput, info, setFailed, setOutput } from "@actions/core";
 import { exec } from "@actions/exec";
 import { context } from "@actions/github";
 import { mkdirP } from "@actions/io";
@@ -131,10 +131,8 @@ async function npmBuildProjects(rootDir: string): Promise<void> {
     const projectPath = `${rootDir}/${project}`;
     const isNodeProject = fs.existsSync(`${projectPath}/package.json`);
     if (isNodeProject) {
-      await exec(`pushd ${project}`);
-      await exec("npm install");
-      await exec("npm run build --if-present");
-      await exec("popd");
+      await exec("npm install", undefined, { cwd: projectPath });
+      await exec("npm run build --if-present", undefined, { cwd: projectPath });
     }
   }
 }

@@ -44,12 +44,6 @@ function run() {
             const rootDir = path_1.default.join(workingDirectory);
             (0, core_1.info)(`Creating directory '${projectName}' in ${rootDir}`);
             yield (0, io_1.mkdirP)(path_1.default.join(rootDir, projectName));
-            // if (isDebug()) {
-            //   initDebugDirectory(
-            //     path.join(__dirname, "demo"),
-            //     path.join(workingDirectory, projectName),
-            //   );
-            // }
             yield moveAllFilesButDirectoryIntoDirectory(rootDir, projectName);
             const fallbackDepListFilePath = "build_info/repos";
             const dependencyListFilePath = (_b = (0, core_1.getInput)(options.depListFilePath)) !== null && _b !== void 0 ? _b : fallbackDepListFilePath;
@@ -122,10 +116,8 @@ function npmBuildProjects(rootDir) {
             const projectPath = `${rootDir}/${project}`;
             const isNodeProject = fs_1.default.existsSync(`${projectPath}/package.json`);
             if (isNodeProject) {
-                yield (0, exec_1.exec)(`pushd ${project}`);
-                yield (0, exec_1.exec)("npm install");
-                yield (0, exec_1.exec)("npm run build --if-present");
-                yield (0, exec_1.exec)("popd");
+                yield (0, exec_1.exec)("npm install", undefined, { cwd: projectPath });
+                yield (0, exec_1.exec)("npm run build --if-present", undefined, { cwd: projectPath });
             }
         }
     });
@@ -160,11 +152,6 @@ function archiveH5PPack(filename, rootDir) {
         (0, core_1.info)(`Archiving H5P into file '${filename}'`);
         const artifactClient = (0, artifact_1.create)();
         yield artifactClient.uploadArtifact(filename, [path_1.default.join(rootDir, filename)], ".");
-    });
-}
-function initDebugDirectory(rootDir, distDir) {
-    return __awaiter(this, void 0, void 0, function* () {
-        yield fs_1.default.promises.rename(rootDir, path_1.default.join(distDir, rootDir));
     });
 }
 run();
