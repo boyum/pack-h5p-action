@@ -30,7 +30,7 @@ jobs:
     name: Pack and archive
     steps:
       - uses: actions/checkout@v2
-      - uses: boyum/pack-h5p-action@v0.0.1
+      - uses: boyum/pack-h5p-action@0.0.6
 ```
 
 ### Custom dependency path
@@ -46,7 +46,7 @@ jobs:
     name: Pack and archive
     steps:
       - uses: actions/checkout@v2
-      - uses: boyum/pack-h5p-action@v0.0.1
+      - uses: boyum/pack-h5p-action@0.0.6
         with:
           h5p-dependency-list-file: h5p-dependencies.txt
 ```
@@ -64,7 +64,7 @@ jobs:
     name: Pack and release
     steps:
       - uses: actions/checkout@v2
-      - uses: boyum/pack-h5p-action@v0.0.1
+      - uses: boyum/pack-h5p-action@0.0.6
         id: release-h5p
       - uses: "marvinpinto/action-automatic-releases@latest" # https://github.com/marvinpinto/actions/tree/master/packages/automatic-releases
         if: ${{ github.ref == 'refs/heads/main' }}
