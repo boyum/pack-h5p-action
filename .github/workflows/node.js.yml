@@ -45,6 +45,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: ./
+        with:
+          working-directory: "demo"
 
   build:
     name: Build
