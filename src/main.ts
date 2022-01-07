@@ -1,5 +1,5 @@
 import { create as createArtifactClient } from "@actions/artifact";
-import { debug, getInput, setFailed, setOutput } from "@actions/core";
+import { info, debug, getInput, setFailed, setOutput } from "@actions/core";
 import { exec } from "@actions/exec";
 import { context } from "@actions/github";
 import { mkdirP } from "@actions/io";
@@ -144,13 +144,14 @@ async function getLibraryContents(
   projectName: string,
 ): Promise<Library | null> {
   debug("Fetching library contents");
-  debug(
+  info(`Contents in root: ${await fs.promises.readdir(rootDir)}`);
+  info(
     `Contents in root/project: ${await fs.promises.readdir(
       path.join(rootDir, projectName),
     )}`,
   );
 
-  const libraryPath = `${rootDir}/${projectName}/library.json`;
+  const libraryPath = path.join(rootDir, projectName, "library.json");
   const libraryExists = fs.existsSync(libraryPath);
   if (!libraryExists) {
     setFailed(`Could not find \`${libraryPath}\`.`);
