@@ -42,7 +42,7 @@ function run() {
             const workingDirectory = (_a = (0, core_1.getInput)(options.workingDirectory)) !== null && _a !== void 0 ? _a : "";
             const projectName = github_1.context.repo.repo;
             const rootDir = path_1.default.join(__dirname, workingDirectory);
-            (0, core_1.debug)(`Creating directory '${projectName}' in ${rootDir}`);
+            (0, core_1.info)(`Creating directory '${projectName}' in ${rootDir}`);
             yield (0, io_1.mkdirP)(path_1.default.join(rootDir, projectName));
             yield moveAllFilesButDirectoryIntoDirectory(rootDir, projectName);
             const fallbackDepListFilePath = "build_info/repos";
@@ -53,7 +53,7 @@ function run() {
                 cloneDependencies(projectName, rootDir, dependencyListFilePath);
             }
             else if (useFallbackDepListFilePath) {
-                (0, core_1.debug)(`Could not find an H5P dependency file.`);
+                (0, core_1.info)(`Could not find an H5P dependency file.`);
             }
             else {
                 (0, core_1.setFailed)(`The provided H5P dependency file '${dependencyListFilePath}' could not be found.
@@ -86,23 +86,23 @@ function moveAllFilesButDirectoryIntoDirectory(rootDir, destinationDirectory) {
     return __awaiter(this, void 0, void 0, function* () {
         const contents = yield fs_1.default.promises.readdir(rootDir);
         const contentsExceptDestDir = contents.filter(fileOrDir => fileOrDir !== destinationDirectory);
-        (0, core_1.debug)(`Contents: ${JSON.stringify(contents)}`);
+        (0, core_1.info)(`Contents: ${JSON.stringify(contents)}`);
         // Move everything into the project directory.
         // When doing this, the current project gets the
         // same structure as the dependencies. This is
         // crucial for the `h5p pack` command.
         yield Promise.all(contentsExceptDestDir.map((fileOrDir) => __awaiter(this, void 0, void 0, function* () {
-            (0, core_1.debug)(`Moving ${fileOrDir} into ${destinationDirectory}`);
+            (0, core_1.info)(`Moving ${fileOrDir} into ${destinationDirectory}`);
             yield fs_1.default.promises.rename(`${rootDir}/${fileOrDir}`, `${rootDir}/${destinationDirectory}/${fileOrDir}`);
         })));
     });
 }
 function cloneDependencies(projectName, rootDir, dependencyListFilePath) {
     return __awaiter(this, void 0, void 0, function* () {
-        (0, core_1.debug)(`Cloning dependencies from '${dependencyListFilePath}'`);
+        (0, core_1.info)(`Cloning dependencies from '${dependencyListFilePath}'`);
         const dependencyFile = (yield fs_1.default.promises.readFile(`${rootDir}/${projectName}/dependencyListFilePath`)).toString("utf-8");
         const dependencies = dependencyFile.split("\n");
-        (0, core_1.debug)(`Dependencies: ${JSON.stringify(dependencies)}`);
+        (0, core_1.info)(`Dependencies: ${JSON.stringify(dependencies)}`);
         Promise.all(dependencies.map((dependency) => __awaiter(this, void 0, void 0, function* () {
             yield (0, exec_1.exec)(`git clone ${dependency}`);
         })));
@@ -111,7 +111,7 @@ function cloneDependencies(projectName, rootDir, dependencyListFilePath) {
 function npmBuildProjects(rootDir) {
     return __awaiter(this, void 0, void 0, function* () {
         const projects = yield fs_1.default.promises.readdir(rootDir);
-        (0, core_1.debug)(`Building projects: ${projects}`);
+        (0, core_1.info)(`Building projects: ${projects}`);
         for (const project of projects) {
             const projectPath = `${rootDir}/${project}`;
             const isNodeProject = fs_1.default.existsSync(`${projectPath}/package.json`);
@@ -126,7 +126,7 @@ function npmBuildProjects(rootDir) {
 }
 function getLibraryContents(rootDir, projectName) {
     return __awaiter(this, void 0, void 0, function* () {
-        (0, core_1.debug)("Fetching library contents");
+        (0, core_1.info)("Fetching library contents");
         (0, core_1.info)(`Contents in root: ${yield fs_1.default.promises.readdir(rootDir)}`);
         (0, core_1.info)(`Contents in root/project: ${yield fs_1.default.promises.readdir(path_1.default.join(rootDir, projectName))}`);
         const libraryPath = path_1.default.join(rootDir, projectName, "library.json");
@@ -141,7 +141,7 @@ function getLibraryContents(rootDir, projectName) {
 }
 function packH5P(projectName, filename, rootDir) {
     return __awaiter(this, void 0, void 0, function* () {
-        (0, core_1.debug)(`Packing H5P into file '${filename}'`);
+        (0, core_1.info)(`Packing H5P into file '${filename}'`);
         yield (0, exec_1.exec)("npm install -g h5p");
         yield (0, exec_1.exec)(`h5p pack -r ${projectName} ${filename}`, undefined, {
             cwd: rootDir,
@@ -151,7 +151,7 @@ function packH5P(projectName, filename, rootDir) {
 }
 function archiveH5PPack(filename, rootDir) {
     return __awaiter(this, void 0, void 0, function* () {
-        (0, core_1.debug)(`Archiving H5P into file '${filename}'`);
+        (0, core_1.info)(`Archiving H5P into file '${filename}'`);
         const artifactClient = (0, artifact_1.create)();
         yield artifactClient.uploadArtifact(filename, [path_1.default.join(rootDir, filename)], ".");
     });
