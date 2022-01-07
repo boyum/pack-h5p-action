@@ -24,7 +24,6 @@ const core_1 = __nccwpck_require__(2186);
 const exec_1 = __nccwpck_require__(1514);
 const github_1 = __nccwpck_require__(5438);
 const io_1 = __nccwpck_require__(7436);
-const console_1 = __nccwpck_require__(7082);
 const fs_1 = __importDefault(__nccwpck_require__(5747));
 const path_1 = __importDefault(__nccwpck_require__(5622));
 const utils_1 = __nccwpck_require__(918);
@@ -128,8 +127,8 @@ function npmBuildProjects(rootDir) {
 function getLibraryContents(rootDir, projectName) {
     return __awaiter(this, void 0, void 0, function* () {
         (0, core_1.debug)("Fetching library contents");
-        (0, console_1.info)(`Contents in root: ${yield fs_1.default.promises.readdir(rootDir)}`);
-        (0, console_1.info)(`Contents in root/project: ${yield fs_1.default.promises.readdir(path_1.default.join(rootDir, projectName))}`);
+        (0, core_1.info)(`Contents in root: ${yield fs_1.default.promises.readdir(rootDir)}`);
+        (0, core_1.info)(`Contents in root/project: ${yield fs_1.default.promises.readdir(path_1.default.join(rootDir, projectName))}`);
         const libraryPath = path_1.default.join(rootDir, projectName, "library.json");
         const libraryExists = fs_1.default.existsSync(libraryPath);
         if (!libraryExists) {
@@ -15986,14 +15985,6 @@ module.exports = require("assert");
 
 "use strict";
 module.exports = require("child_process");
-
-/***/ }),
-
-/***/ 7082:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("console");
 
 /***/ }),
 
