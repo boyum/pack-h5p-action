@@ -146,7 +146,6 @@ function packH5P(projectName, filename, rootDir) {
             cwd: rootDir,
         });
         yield (0, exec_1.exec)(`h5p validate ${filename}`, undefined, { cwd: rootDir });
-        yield (0, exec_1.exec)("ls -l", undefined, { cwd: rootDir });
     });
 }
 function archiveH5PPack(filename, rootDir) {
