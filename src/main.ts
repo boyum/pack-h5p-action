@@ -20,7 +20,7 @@ const outputs = {
 
 async function run(): Promise<void> {
   try {
-    const workingDirectory = getInput(options.workingDirectory) ?? "";
+    const workingDirectory = getInput(options.workingDirectory) || "";
     const projectName = context.repo.repo;
     const rootDir = path.join(workingDirectory);
 
@@ -30,7 +30,7 @@ async function run(): Promise<void> {
 
     const fallbackDepListFilePath = "build_info/repos";
     const dependencyListFilePath =
-      getInput(options.depListFilePath) ?? fallbackDepListFilePath;
+      getInput(options.depListFilePath) || fallbackDepListFilePath;
 
     const useFallbackDepListFilePath =
       fallbackDepListFilePath === dependencyListFilePath;
