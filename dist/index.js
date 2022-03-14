@@ -100,7 +100,7 @@ function moveAllFilesButDirectoryIntoDirectory(rootDir, destinationDirectory) {
 function cloneDependencies(projectName, rootDir, dependencyListFilePath) {
     return __awaiter(this, void 0, void 0, function* () {
         (0, core_1.info)(`Cloning dependencies from '${dependencyListFilePath}'`);
-        const dependencyFile = (yield fs_1.default.promises.readFile(`${rootDir}/${projectName}/dependencyListFilePath`)).toString("utf-8");
+        const dependencyFile = (yield fs_1.default.promises.readFile(`${rootDir}/${projectName}/${dependencyListFilePath}`)).toString("utf-8");
         const dependencies = dependencyFile.split("\n");
         (0, core_1.info)(`Dependencies: ${JSON.stringify(dependencies)}`);
         Promise.all(dependencies.map((dependency) => __awaiter(this, void 0, void 0, function* () {

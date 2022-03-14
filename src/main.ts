@@ -111,7 +111,7 @@ async function cloneDependencies(
 
   const dependencyFile = (
     await fs.promises.readFile(
-      `${rootDir}/${projectName}/dependencyListFilePath`,
+      `${rootDir}/${projectName}/${dependencyListFilePath}`,
     )
   ).toString("utf-8");
 
