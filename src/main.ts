@@ -25,7 +25,9 @@ async function run(): Promise<void> {
     const rootDir = path.join(workingDirectory);
 
     info(`Creating directory '${projectName}' in ${rootDir}`);
-    await mkdirP(path.join(rootDir, projectName));
+
+    const projectDir = path.join(rootDir, projectName);
+    await mkdirP(projectDir);
     await moveAllFilesButDirectoryIntoDirectory(rootDir, projectName);
 
     const fallbackDepListFilePath = "build_info/repos";
@@ -36,7 +38,7 @@ async function run(): Promise<void> {
       fallbackDepListFilePath === dependencyListFilePath;
 
     const dependencyListFileExists = fs.existsSync(
-      path.join(rootDir, dependencyListFilePath),
+      path.join(projectDir, dependencyListFilePath),
     );
     if (dependencyListFileExists) {
       cloneDependencies(projectName, rootDir, dependencyListFilePath);
@@ -141,15 +143,13 @@ async function getLibraryContents(
   rootDir: string,
   projectName: string,
 ): Promise<Library | null> {
+  const projectDir = path.join(rootDir, projectName);
+
   info("Fetching library contents");
   info(`Contents in root: ${await fs.promises.readdir(rootDir)}`);
-  info(
-    `Contents in root/project: ${await fs.promises.readdir(
-      path.join(rootDir, projectName),
-    )}`,
-  );
+  info(`Contents in root/project: ${await fs.promises.readdir(projectDir)}`);
 
-  const libraryPath = path.join(rootDir, projectName, "library.json");
+  const libraryPath = path.join(projectDir, "library.json");
   const libraryExists = fs.existsSync(libraryPath);
   if (!libraryExists) {
     setFailed(`Could not find \`${libraryPath}\`.`);
