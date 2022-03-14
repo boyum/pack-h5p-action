@@ -106,7 +106,7 @@ async function cloneDependencies(
   projectName: string,
   rootDir: string,
   dependencyListFilePath: string,
-): Promise<void> {
+): Promise<number[]> {
   info(`Cloning dependencies from '${dependencyListFilePath}'`);
 
   const dependencyFile = (
@@ -118,10 +118,8 @@ async function cloneDependencies(
   const dependencies = dependencyFile.split("\n");
   info(`Dependencies: ${JSON.stringify(dependencies)}`);
 
-  Promise.all(
-    dependencies.map(async dependency => {
-      await exec(`git clone ${dependency}`);
-    }),
+  return Promise.all(
+    dependencies.map(async dependency => exec(`git clone ${dependency}`)),
   );
 }
 
