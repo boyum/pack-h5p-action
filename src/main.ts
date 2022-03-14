@@ -41,7 +41,7 @@ async function run(): Promise<void> {
       path.join(projectDir, dependencyListFilePath),
     );
     if (dependencyListFileExists) {
-      cloneDependencies(projectName, rootDir, dependencyListFilePath);
+      await cloneDependencies(projectName, rootDir, dependencyListFilePath);
     } else if (useFallbackDepListFilePath) {
       info(`Could not find an H5P dependency file.`);
     } else {

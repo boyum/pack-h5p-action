@@ -50,7 +50,7 @@ function run() {
             const useFallbackDepListFilePath = fallbackDepListFilePath === dependencyListFilePath;
             const dependencyListFileExists = fs_1.default.existsSync(path_1.default.join(projectDir, dependencyListFilePath));
             if (dependencyListFileExists) {
-                cloneDependencies(projectName, rootDir, dependencyListFilePath);
+                yield cloneDependencies(projectName, rootDir, dependencyListFilePath);
             }
             else if (useFallbackDepListFilePath) {
                 (0, core_1.info)(`Could not find an H5P dependency file.`);
