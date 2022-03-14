@@ -107,7 +107,11 @@ function cloneDependencies(projectName, rootDir, dependencyListFilePath) {
                 .filter(dependencyName => dependencyName.trim().length > 0)),
         ];
         (0, core_1.info)(`Dependencies: ${JSON.stringify(dependencies)}`);
-        return Promise.all(dependencies.map((dependency) => __awaiter(this, void 0, void 0, function* () { return (0, exec_1.exec)(`git clone ${dependency}`); })));
+        return Promise.all(dependencies.map((dependency) => __awaiter(this, void 0, void 0, function* () {
+            return (0, exec_1.exec)(`git clone ${dependency}`, undefined, {
+                cwd: rootDir,
+            });
+        })));
     });
 }
 function npmBuildProject(projectPath) {

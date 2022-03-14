@@ -126,7 +126,11 @@ async function cloneDependencies(
   info(`Dependencies: ${JSON.stringify(dependencies)}`);
 
   return Promise.all(
-    dependencies.map(async dependency => exec(`git clone ${dependency}`)),
+    dependencies.map(async dependency =>
+      exec(`git clone ${dependency}`, undefined, {
+        cwd: rootDir,
+      }),
+    ),
   );
 }
 
