@@ -36,17 +36,16 @@ const outputs = {
     version: "version",
 };
 function run() {
-    var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const workingDirectory = (_a = (0, core_1.getInput)(options.workingDirectory)) !== null && _a !== void 0 ? _a : "";
+            const workingDirectory = (0, core_1.getInput)(options.workingDirectory) || "";
             const projectName = github_1.context.repo.repo;
             const rootDir = path_1.default.join(workingDirectory);
             (0, core_1.info)(`Creating directory '${projectName}' in ${rootDir}`);
             yield (0, io_1.mkdirP)(path_1.default.join(rootDir, projectName));
             yield moveAllFilesButDirectoryIntoDirectory(rootDir, projectName);
             const fallbackDepListFilePath = "build_info/repos";
-            const dependencyListFilePath = (_b = (0, core_1.getInput)(options.depListFilePath)) !== null && _b !== void 0 ? _b : fallbackDepListFilePath;
+            const dependencyListFilePath = (0, core_1.getInput)(options.depListFilePath) || fallbackDepListFilePath;
             const useFallbackDepListFilePath = fallbackDepListFilePath === dependencyListFilePath;
             const dependencyListFileExists = fs_1.default.existsSync(path_1.default.join(rootDir, dependencyListFilePath));
             if (dependencyListFileExists) {
