@@ -115,7 +115,10 @@ async function cloneDependencies(
     )
   ).toString("utf-8");
 
-  const dependencies = dependencyFile.split("\n");
+  const dependencies = dependencyFile
+    .split("\n")
+    .filter(dependencyName => dependencyName.trim().length > 0);
+
   info(`Dependencies: ${JSON.stringify(dependencies)}`);
 
   return Promise.all(
