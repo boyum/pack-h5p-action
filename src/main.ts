@@ -115,29 +115,53 @@ async function cloneDependencies(
     )
   ).toString("utf-8");
 
-  const dependencies = dependencyFile
-    .split("\n")
-    .filter(dependencyName => dependencyName.trim().length > 0);
+  const dependencies = [
+    ...new Set(
+      dependencyFile
+        .split("\n")
+        .filter(dependencyName => dependencyName.trim().length > 0),
+    ),
+  ];
 
   info(`Dependencies: ${JSON.stringify(dependencies)}`);
 
   return Promise.all(
-    dependencies.map(async dependency => exec(`git clone ${dependency}`)),
+    dependencies.map(async dependency =>
+      exec(`git clone ${dependency}`, undefined, {
+        cwd: rootDir,
+      }),
+    ),
   );
 }
 
-async function npmBuildProjects(rootDir: string): Promise<void> {
+async function npmBuildProject(projectPath: string): Promise<void> {
+  const isNodeProject = fs.existsSync(`${projectPath}/package.json`);
+  if (isNodeProject) {
+    try {
+      await exec("npm install", undefined, { cwd: projectPath });
+      await exec("npm run build --if-present", undefined, {
+        cwd: projectPath,
+      });
+
+      Promise.resolve();
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  } else {
+    return Promise.resolve();
+  }
+}
+
+async function npmBuildProjects(rootDir: string): Promise<void[]> {
   const projects = await fs.promises.readdir(rootDir);
   info(`Building projects: ${projects}`);
 
-  for (const project of projects) {
-    const projectPath = `${rootDir}/${project}`;
-    const isNodeProject = fs.existsSync(`${projectPath}/package.json`);
-    if (isNodeProject) {
-      await exec("npm install", undefined, { cwd: projectPath });
-      await exec("npm run build --if-present", undefined, { cwd: projectPath });
-    }
-  }
+  return Promise.all(
+    projects.map(async project => {
+      const projectPath = `${rootDir}/${project}`;
+      return npmBuildProject(projectPath);
+    }),
+  );
 }
 
 async function getLibraryContents(
