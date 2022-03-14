@@ -108,18 +108,34 @@ function cloneDependencies(projectName, rootDir, dependencyListFilePath) {
         return Promise.all(dependencies.map((dependency) => __awaiter(this, void 0, void 0, function* () { return (0, exec_1.exec)(`git clone ${dependency}`); })));
     });
 }
+function npmBuildProject(projectPath) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const isNodeProject = fs_1.default.existsSync(`${projectPath}/package.json`);
+        if (isNodeProject) {
+            try {
+                yield (0, exec_1.exec)("npm install", undefined, { cwd: projectPath });
+                yield (0, exec_1.exec)("npm run build --if-present", undefined, {
+                    cwd: projectPath,
+                });
+                Promise.resolve();
+            }
+            catch (error) {
+                return Promise.reject(error);
+            }
+        }
+        else {
+            return Promise.resolve();
+        }
+    });
+}
 function npmBuildProjects(rootDir) {
     return __awaiter(this, void 0, void 0, function* () {
         const projects = yield fs_1.default.promises.readdir(rootDir);
         (0, core_1.info)(`Building projects: ${projects}`);
-        for (const project of projects) {
+        return Promise.all(projects.map((project) => __awaiter(this, void 0, void 0, function* () {
             const projectPath = `${rootDir}/${project}`;
-            const isNodeProject = fs_1.default.existsSync(`${projectPath}/package.json`);
-            if (isNodeProject) {
-                yield (0, exec_1.exec)("npm install", undefined, { cwd: projectPath });
-                yield (0, exec_1.exec)("npm run build --if-present", undefined, { cwd: projectPath });
-            }
-        }
+            return npmBuildProject(projectPath);
+        })));
     });
 }
 function getLibraryContents(rootDir, projectName) {
