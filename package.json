@@ -36,7 +36,7 @@
     "@actions/tool-cache": "^1.7.2"
   },
   "devDependencies": {
-    "@types/node": "^17.0.44",
+    "@types/node": "^18.0.1",
     "@typescript-eslint/parser": "^5.30.4",
     "@vercel/ncc": "^0.33.4",
     "eslint": "^8.14.0",
