@@ -49,7 +49,7 @@
     "prettier": "2.7.1",
     "prettier-config": "github:boyum/prettier-config",
     "ts-jest": "^28.0.8",
-    "typescript": "^4.8.2"
+    "typescript": "^4.8.4"
   },
   "prettier": "prettier-config"
 }
