@@ -1,4 +1,4 @@
-import { Library } from "./h5p/types/library";
+import type { Library } from "h5p-types";
 
 export function getVersionString(library: Library): string {
   const { majorVersion, minorVersion, patchVersion } = library;

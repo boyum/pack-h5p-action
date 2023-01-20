@@ -4,8 +4,8 @@ import { exec } from "@actions/exec";
 import { context } from "@actions/github";
 import { mkdirP } from "@actions/io";
 import fs from "fs";
+import type { Library } from "h5p-types";
 import path from "path";
-import { Library } from "./h5p/types/library";
 import { getFilename, getVersionString } from "./utils";
 
 const options = {
