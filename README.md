@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Pack and archive
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: boyum/pack-h5p-action@0.0.6
 ```
 
@@ -45,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Pack and archive
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: boyum/pack-h5p-action@0.0.6
         with:
           h5p-dependency-list-file: h5p-dependencies.txt
@@ -63,7 +63,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Pack and release
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: boyum/pack-h5p-action@0.0.6
         id: release-h5p
       - uses: "marvinpinto/action-automatic-releases@latest" # https://github.com/marvinpinto/actions/tree/master/packages/automatic-releases
