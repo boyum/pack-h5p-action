@@ -4,7 +4,7 @@ import { exec } from "@actions/exec";
 import { context } from "@actions/github";
 import { mkdirP } from "@actions/io";
 import fs from "fs";
-import type { Library } from "h5p-types";
+import type { H5PLibrary } from "h5p-types";
 import path from "path";
 import { getFilename, getVersionString } from "./utils";
 
@@ -167,7 +167,7 @@ async function npmBuildProjects(rootDir: string): Promise<void[]> {
 async function getLibraryContents(
   rootDir: string,
   projectName: string,
-): Promise<Library | null> {
+): Promise<H5PLibrary | null> {
   const projectDir = path.join(rootDir, projectName);
 
   info("Fetching library contents");
@@ -184,7 +184,7 @@ async function getLibraryContents(
   const libraryJson = (await fs.promises.readFile(libraryPath)).toString(
     "utf-8",
   );
-  return JSON.parse(libraryJson) as Library;
+  return JSON.parse(libraryJson) as H5PLibrary;
 }
 
 async function packH5P(
