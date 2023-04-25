@@ -1,5 +1,22 @@
 # Changelog
 
+### [1.0.1](https://github.com/boyum/pack-h5p-action/compare/v1.0.0...v1.0.1) (2023-04-25)
+
+
+### Documentation
+
+* update version number ([afb6457](https://github.com/boyum/pack-h5p-action/commit/afb645710dec2f8f24319ccdc4ccb3fb17a432c3))
+
+
+### Continuous Integration
+
+* delete auto release ([c63c9c8](https://github.com/boyum/pack-h5p-action/commit/c63c9c8c8b80d713c58cc45a75dfc158c671a326))
+
+
+### Build System
+
+* **deps-dev:** bump typescript from 4.9.5 to 5.0.4 ([#365](https://github.com/boyum/pack-h5p-action/issues/365)) ([2efccfe](https://github.com/boyum/pack-h5p-action/commit/2efccfe050b5165234d0656a52cda840bcc9d87a))
+
 ## [1.0.0](https://github.com/boyum/pack-h5p-action/compare/v0.0.2...v1.0.0) (2023-02-20)
 
 
