@@ -44,9 +44,11 @@ jobs:
           fi
         id: diff
 
-      # If index.js was different than expected, upload the expected version as an artifact
-      - uses: actions/upload-artifact@v3
+      - name: Create Pull Request with changes to dist
         if: ${{ failure() && steps.diff.conclusion == 'failure' }}
+        uses: peter-evans/create-pull-request@v5
         with:
-          name: dist
-          path: dist/
+          title: "chore: rebuild dist"
+          commit-message: "chore: rebuild dist"
+          delete-branch: true
+          base: ${{ github.head_ref	}}
