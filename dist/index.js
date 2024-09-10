@@ -110,7 +110,11 @@ function cloneDependencies(projectName, rootDir, dependencyListFilePath) {
         return Promise.all(dependencies.map((dependency) => __awaiter(this, void 0, void 0, function* () {
             return (0, exec_1.exec)(`git clone ${dependency}`, undefined, {
                 cwd: rootDir,
-            });
+                // eslint-disable-next-line github/no-then
+            }).catch((error) => __awaiter(this, void 0, void 0, function* () {
+                (0, core_1.setFailed)(`Failed to clone ${dependency}: ${error}`);
+                return Promise.reject(error);
+            }));
         })));
     });
 }

@@ -129,6 +129,7 @@ async function cloneDependencies(
     dependencies.map(async dependency =>
       exec(`git clone ${dependency}`, undefined, {
         cwd: rootDir,
+        // eslint-disable-next-line github/no-then
       }).catch(async error => {
         setFailed(`Failed to clone ${dependency}: ${error}`);
         return Promise.reject(error);
