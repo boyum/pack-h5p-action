@@ -1,37 +1,23 @@
 name: Test and build
 
 on:
-  push:
-    branches: [main]
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
-  check-format:
-    name: Check format
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Install Node.js dependencies
-        uses: bahmutov/npm-install@v1
-
-      - run: npm run format-check
-
   check-lint:
-    name: Check lint
+    name: Check lint and formatting
 
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Install Node.js dependencies
         uses: bahmutov/npm-install@v1
 
-      - run: npm run lint-check
+      - run: npm run lint:check
 
   test-code:
     name: Test code
@@ -39,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Install Node.js dependencies
         uses: bahmutov/npm-install@v1
@@ -52,10 +38,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./
         with:
-          working-directory: "demo"
+          working-directory: demo
 
   build:
     name: Build
@@ -63,7 +49,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Install Node.js dependencies
         uses: bahmutov/npm-install@v1
