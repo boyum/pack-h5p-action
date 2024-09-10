@@ -119,7 +119,8 @@ async function cloneDependencies(
     ...new Set(
       dependencyFile
         .split("\n")
-        .filter(dependencyName => dependencyName.trim().length > 0),
+        .filter(dependencyName => dependencyName.trim().length > 0)
+        .filter(dependencyName => !dependencyName.startsWith("#")),
     ),
   ];
 
