@@ -78,14 +78,14 @@ jobs:
 
 ## Options
 
-| Name | Required | Default value | Description |
-|---|---|---|---|
-| `h5p-dependency-list-file` | false | `build_info/repos` | The file where dependency Git URIs are found. Must be omitted if the file does not exist. |
-| `working-directory` | false | `.` | The directory where `library.json` is found.  |
+| Name                       | Required | Default value      | Description                                                                               |
+| -------------------------- | -------- | ------------------ | ----------------------------------------------------------------------------------------- |
+| `h5p-dependency-list-file` | false    | `build_info/repos` | The file where dependency Git URIs are found. Must be omitted if the file does not exist. |
+| `working-directory`        | false    | `.`                | The directory where `library.json` is found.                                              |
 
 ## Outputs
 
-| Name | Type | Description |
-|---|---|---|
-| `filePath` | `string` | The path to the archived file |
-| `version` | `string` | The content type's version on the form `vx.y.z` |
+| Name       | Type     | Description                                     |
+| ---------- | -------- | ----------------------------------------------- |
+| `filePath` | `string` | The path to the archived file                   |
+| `version`  | `string` | The content type's version on the form `vx.y.z` |
