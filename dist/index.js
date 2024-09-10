@@ -104,7 +104,8 @@ function cloneDependencies(projectName, rootDir, dependencyListFilePath) {
         const dependencies = [
             ...new Set(dependencyFile
                 .split("\n")
-                .filter(dependencyName => dependencyName.trim().length > 0)),
+                .filter(dependencyName => dependencyName.trim().length > 0)
+                .filter(dependencyName => !dependencyName.startsWith("#"))),
         ];
         (0, core_1.info)(`Dependencies: ${JSON.stringify(dependencies, null, 2)}`);
         return Promise.all(dependencies.map((dependency) => __awaiter(this, void 0, void 0, function* () {
