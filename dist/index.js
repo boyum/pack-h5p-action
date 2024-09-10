@@ -129,6 +129,7 @@ function npmBuildProject(projectPath) {
         const isNodeProject = fs_1.default.existsSync(`${projectPath}/package.json`);
         if (isNodeProject) {
             try {
+                (0, core_1.info)(`Building project in ${projectPath}`);
                 yield (0, exec_1.exec)("npm install", undefined, { cwd: projectPath });
                 yield (0, exec_1.exec)("npm run build --if-present", undefined, {
                     cwd: projectPath,
