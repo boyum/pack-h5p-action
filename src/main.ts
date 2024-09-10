@@ -129,7 +129,7 @@ async function cloneDependencies(
     dependencies.map(async dependency =>
       exec(`git clone ${dependency}`, undefined, {
         cwd: rootDir,
-      }).catch(error => {
+      }).catch(async error => {
         setFailed(`Failed to clone ${dependency}: ${error}`);
         return Promise.reject(error);
       }),
