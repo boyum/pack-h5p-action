@@ -150,8 +150,10 @@ async function npmBuildProject(projectPath: string): Promise<void> {
   const isNodeProject = fs.existsSync(`${projectPath}/package.json`);
   if (isNodeProject) {
     try {
-      info(`Building project in ${projectPath}`);
+      info(`Installing dependencies in ${projectPath}`);
       await exec("npm install", undefined, { cwd: projectPath });
+
+      info(`Building project in ${projectPath}`);
       await exec("npm run build --if-present", undefined, {
         cwd: projectPath,
       });
