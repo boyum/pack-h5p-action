@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/boyum/pack-h5p-action/compare/v1...v1.2.0) (2024-09-10)
+
+
+### Features
+
+* improve error handling when a dependency is missing ([#592](https://github.com/boyum/pack-h5p-action/issues/592)) ([7a6bcb1](https://github.com/boyum/pack-h5p-action/commit/7a6bcb1c7682803a44df8dbff94300a82caefea4))
+
 ### [1.0.1](https://github.com/boyum/pack-h5p-action/compare/v1.0.0...v1.0.1) (2023-04-25)
 
 
