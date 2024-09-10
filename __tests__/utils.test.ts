@@ -1,4 +1,5 @@
-import { getVersionString, getFilename } from "../src/utils";
+import { describe, expect, it } from "@jest/globals";
+import { getFilename, getVersionString } from "../src/utils";
 
 describe("Utils", () => {
   describe(getVersionString.name, () => {
