@@ -6,7 +6,7 @@ import { exec } from "@actions/exec";
 import { context } from "@actions/github";
 import { mkdirP } from "@actions/io";
 import type { H5PLibrary } from "h5p-types";
-import { getFilename, getVersionString } from "./utils";
+import { getFilename, getVersionString } from "./utils.js";
 
 const options = {
   depListFilePath: "h5p-dependency-list-file",
