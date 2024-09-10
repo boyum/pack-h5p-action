@@ -2,6 +2,7 @@
   "name": "pack-h5p-action",
   "version": "1.2.0",
   "description": "Pack a H5P content type and its dependencies to a .h5p file",
+  "type": "module",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
@@ -9,19 +10,16 @@
     "lint:fix": "biome check --write",
     "package": "npm run build && ncc build --source-map --license licenses.txt",
     "test": "jest",
-    "all": "npm run lint:check && npm run package && npm test",
+    "all": "npm run lint:fix && npm run package && npm test",
     "release": "npm run all && release-it"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/boyum/pack-h5p-action.git"
   },
-  "keywords": [
-    "actions",
-    "h5p"
-  ],
+  "keywords": ["actions", "h5p"],
   "author": "GitHub",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/boyum/pack-h5p-action/issues"
   },
