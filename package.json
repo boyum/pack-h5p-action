@@ -1,6 +1,6 @@
 {
   "name": "pack-h5p-action",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Pack a H5P content type and its dependencies to a .h5p file",
   "main": "lib/main.js",
   "scripts": {

@@ -119,16 +119,29 @@ async function cloneDependencies(
     ...new Set(
       dependencyFile
         .split("\n")
-        .filter(dependencyName => dependencyName.trim().length > 0),
+        .filter(dependencyName => dependencyName.trim().length > 0)
+        .filter(dependencyName => !dependencyName.startsWith("#")),
     ),
   ];
 
-  info(`Dependencies: ${JSON.stringify(dependencies)}`);
+  info(`Dependencies: ${JSON.stringify(dependencies, null, 2)}`);
 
   return Promise.all(
     dependencies.map(async dependency =>
       exec(`git clone ${dependency}`, undefined, {
         cwd: rootDir,
+        // eslint-disable-next-line github/no-then
+      }).catch(async error => {
+        let errorMessage = `Failed to clone ${dependency}: ${error}`;
+
+        switch (error) {
+          case "Error: The process '/usr/bin/git' failed with exit code 128":
+            errorMessage = `Failed to clone ${dependency}: The repository is probably either deleted or private. ${error}`;
+            break;
+        }
+
+        setFailed(errorMessage);
+        return Promise.reject(error);
       }),
     ),
   );
@@ -138,7 +151,10 @@ async function npmBuildProject(projectPath: string): Promise<void> {
   const isNodeProject = fs.existsSync(`${projectPath}/package.json`);
   if (isNodeProject) {
     try {
+      info(`Installing dependencies in ${projectPath}`);
       await exec("npm install", undefined, { cwd: projectPath });
+
+      info(`Building project in ${projectPath}`);
       await exec("npm run build --if-present", undefined, {
         cwd: projectPath,
       });

@@ -104,13 +104,24 @@ function cloneDependencies(projectName, rootDir, dependencyListFilePath) {
         const dependencies = [
             ...new Set(dependencyFile
                 .split("\n")
-                .filter(dependencyName => dependencyName.trim().length > 0)),
+                .filter(dependencyName => dependencyName.trim().length > 0)
+                .filter(dependencyName => !dependencyName.startsWith("#"))),
         ];
-        (0, core_1.info)(`Dependencies: ${JSON.stringify(dependencies)}`);
+        (0, core_1.info)(`Dependencies: ${JSON.stringify(dependencies, null, 2)}`);
         return Promise.all(dependencies.map((dependency) => __awaiter(this, void 0, void 0, function* () {
             return (0, exec_1.exec)(`git clone ${dependency}`, undefined, {
                 cwd: rootDir,
-            });
+                // eslint-disable-next-line github/no-then
+            }).catch((error) => __awaiter(this, void 0, void 0, function* () {
+                let errorMessage = `Failed to clone ${dependency}: ${error}`;
+                switch (error) {
+                    case "Error: The process '/usr/bin/git' failed with exit code 128":
+                        errorMessage = `Failed to clone ${dependency}: The repository is probably either deleted or private. ${error}`;
+                        break;
+                }
+                (0, core_1.setFailed)(errorMessage);
+                return Promise.reject(error);
+            }));
         })));
     });
 }
@@ -119,7 +130,9 @@ function npmBuildProject(projectPath) {
         const isNodeProject = fs_1.default.existsSync(`${projectPath}/package.json`);
         if (isNodeProject) {
             try {
+                (0, core_1.info)(`Installing dependencies in ${projectPath}`);
                 yield (0, exec_1.exec)("npm install", undefined, { cwd: projectPath });
+                (0, core_1.info)(`Building project in ${projectPath}`);
                 yield (0, exec_1.exec)("npm run build --if-present", undefined, {
                     cwd: projectPath,
                 });
