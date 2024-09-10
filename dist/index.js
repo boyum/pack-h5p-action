@@ -19,13 +19,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+const fs_1 = __importDefault(__nccwpck_require__(7147));
+const path_1 = __importDefault(__nccwpck_require__(1017));
 const artifact_1 = __nccwpck_require__(2605);
 const core_1 = __nccwpck_require__(2186);
 const exec_1 = __nccwpck_require__(1514);
 const github_1 = __nccwpck_require__(5438);
 const io_1 = __nccwpck_require__(7436);
-const fs_1 = __importDefault(__nccwpck_require__(7147));
-const path_1 = __importDefault(__nccwpck_require__(1017));
 const utils_1 = __nccwpck_require__(918);
 const options = {
     depListFilePath: "h5p-dependency-list-file",
