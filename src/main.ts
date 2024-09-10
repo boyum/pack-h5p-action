@@ -1,12 +1,12 @@
-import fs from "fs";
-import path from "path";
-import { create as createArtifactClient } from "@actions/artifact";
+import fs from "node:fs";
+import path from "node:path";
+import { DefaultArtifactClient } from "@actions/artifact";
 import { getInput, info, setFailed, setOutput } from "@actions/core";
 import { exec } from "@actions/exec";
 import { context } from "@actions/github";
 import { mkdirP } from "@actions/io";
 import type { H5PLibrary } from "h5p-types";
-import { getFilename, getVersionString } from "./utils";
+import { getFilename, getVersionString } from "./utils.js";
 
 const options = {
   depListFilePath: "h5p-dependency-list-file",
@@ -223,12 +223,8 @@ async function archiveH5PPack(
 ): Promise<void> {
   info(`Archiving H5P into file '${filename}'`);
 
-  const artifactClient = createArtifactClient();
-  await artifactClient.uploadArtifact(
-    filename,
-    [path.join(rootDir, filename)],
-    ".",
-  );
+  const artifact = new DefaultArtifactClient();
+  await artifact.uploadArtifact(filename, [path.join(rootDir, filename)], ".");
 }
 
 run();
