@@ -1,11 +1,11 @@
+import fs from "fs";
+import path from "path";
 import { create as createArtifactClient } from "@actions/artifact";
 import { getInput, info, setFailed, setOutput } from "@actions/core";
 import { exec } from "@actions/exec";
 import { context } from "@actions/github";
 import { mkdirP } from "@actions/io";
-import fs from "fs";
 import type { H5PLibrary } from "h5p-types";
-import path from "path";
 import { getFilename, getVersionString } from "./utils";
 
 const options = {
