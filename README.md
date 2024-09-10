@@ -9,6 +9,7 @@ For simple H5P content types with no dependencies, there are none. However, if t
 `build_info/repos`:
 
 ```txt
+# Comments are supported
 https://github.com/h5p/h5p-dependency-1.git
 https://github.com/my-username/h5p-dependency-2.git
 ```
