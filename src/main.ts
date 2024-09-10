@@ -123,7 +123,7 @@ async function cloneDependencies(
     ),
   ];
 
-  info(`Dependencies: ${JSON.stringify(dependencies)}`);
+  info(`Dependencies: ${JSON.stringify(dependencies, null, 2)}`);
 
   return Promise.all(
     dependencies.map(async dependency =>
