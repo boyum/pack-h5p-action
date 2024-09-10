@@ -112,7 +112,13 @@ function cloneDependencies(projectName, rootDir, dependencyListFilePath) {
                 cwd: rootDir,
                 // eslint-disable-next-line github/no-then
             }).catch((error) => __awaiter(this, void 0, void 0, function* () {
-                (0, core_1.setFailed)(`Failed to clone ${dependency}: ${error}`);
+                let errorMessage = `Failed to clone ${dependency}: ${error}`;
+                switch (error) {
+                    case "Error: The process '/usr/bin/git' failed with exit code 128":
+                        errorMessage = `Failed to clone ${dependency}: The repository is probably either deleted or private. ${error}`;
+                        break;
+                }
+                (0, core_1.setFailed)(errorMessage);
                 return Promise.reject(error);
             }));
         })));

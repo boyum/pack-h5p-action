@@ -131,7 +131,15 @@ async function cloneDependencies(
         cwd: rootDir,
         // eslint-disable-next-line github/no-then
       }).catch(async error => {
-        setFailed(`Failed to clone ${dependency}: ${error}`);
+        let errorMessage = `Failed to clone ${dependency}: ${error}`;
+
+        switch (error) {
+          case "Error: The process '/usr/bin/git' failed with exit code 128":
+            errorMessage = `Failed to clone ${dependency}: The repository is probably either deleted or private. ${error}`;
+            break;
+        }
+
+        setFailed(errorMessage);
         return Promise.reject(error);
       }),
     ),
