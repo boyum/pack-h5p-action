@@ -1,6 +1,6 @@
 {
   "name": "pack-h5p-action",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Pack a H5P content type and its dependencies to a .h5p file",
   "type": "module",
   "main": "lib/main.js",
@@ -17,7 +17,10 @@
     "type": "git",
     "url": "git+https://github.com/boyum/pack-h5p-action.git"
   },
-  "keywords": ["actions", "h5p"],
+  "keywords": [
+    "actions",
+    "h5p"
+  ],
   "author": "GitHub",
   "license": "MIT",
   "bugs": {

@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.1](https://github.com/boyum/pack-h5p-action/compare/v1.2.0...v1.2.1) (2024-09-10)
+
+
+### Documentation
+
+* comments are now supported ([a8da51e](https://github.com/boyum/pack-h5p-action/commit/a8da51edec646f1fcade340269f5417f67805d37))
+
+
+### Styles
+
+* format and lint with Biome ([#589](https://github.com/boyum/pack-h5p-action/issues/589)) ([dc7903f](https://github.com/boyum/pack-h5p-action/commit/dc7903febe4486e54d782b3d68868ce7bf37f0cf))
+
 ## [1.2.0](https://github.com/boyum/pack-h5p-action/compare/v1...v1.2.0) (2024-09-10)
 
 
