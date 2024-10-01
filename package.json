@@ -18,7 +18,7 @@
     "url": "git+https://github.com/boyum/pack-h5p-action.git"
   },
   "keywords": ["actions", "h5p"],
-  "author": "GitHub",
+  "author": "Sindre Bøyum",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/boyum/pack-h5p-action/issues"
@@ -33,12 +33,11 @@
     "@actions/tool-cache": "^2.0.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.8.3",
-    "@release-it/conventional-changelog": "^8.0.1",
+    "@biomejs/biome": "^1.9.3",
+    "@release-it/conventional-changelog": "^8.0.2",
     "@types/node": "^20.16.5",
-    "@typescript-eslint/parser": "^8.5.0",
-    "@vercel/ncc": "^0.38.1",
-    "h5p-types": "^5.4.0",
+    "@vercel/ncc": "^0.38.2",
+    "h5p-types": "^5.5.0",
     "jest": "^29.7.0",
     "jest-circus": "^29.7.0",
     "js-yaml": "^4.1.0",
