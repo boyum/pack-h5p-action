@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.3",
-    "@release-it/conventional-changelog": "^8.0.2",
+    "@release-it/conventional-changelog": "^9.0.0",
     "@types/node": "^20.16.5",
     "@vercel/ncc": "^0.38.2",
     "h5p-types": "^5.5.0",
