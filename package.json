@@ -17,10 +17,7 @@
     "type": "git",
     "url": "git+https://github.com/boyum/pack-h5p-action.git"
   },
-  "keywords": [
-    "actions",
-    "h5p"
-  ],
+  "keywords": ["actions", "h5p"],
   "author": "Sindre Bøyum",
   "license": "MIT",
   "bugs": {
