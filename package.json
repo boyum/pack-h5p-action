@@ -9,7 +9,7 @@
     "lint:check": "biome check",
     "lint:fix": "biome check --write",
     "package": "npm run build && ncc build --source-map --license licenses.txt",
-    "test": "jest",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "all": "npm run lint:fix && npm run package && npm test",
     "release": "npm run all && release-it"
   },
