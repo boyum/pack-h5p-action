@@ -6,13 +6,14 @@ export default {
   testEnvironment: "node",
   testMatch: ["**/*.test.ts"],
   testRunner: "jest-circus/runner",
+  extensionsToTreatAsEsm: [".ts"],
   transform: {
-    "^.+\\.ts$": [
-      "ts-jest", { 
-        isolatedModules: true,
-        useESM: true
-      }
-    ]
+    "^.+.tsx?$": [
+      "ts-jest",
+      {
+        useESM: true,
+      },
+    ],
   },
   verbose: true,
 };
