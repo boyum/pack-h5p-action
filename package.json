@@ -33,7 +33,7 @@
     "@actions/tool-cache": "^2.0.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
+    "@biomejs/biome": "^2.0.5",
     "@release-it/conventional-changelog": "^10.0.0",
     "@types/node": "^20.17.17",
     "@vercel/ncc": "^0.38.3",
