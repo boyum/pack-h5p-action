@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.2.0/schema.json",
   "formatter": {
     "enabled": true,
     "formatWithErrors": false,
@@ -11,7 +11,7 @@
   },
   "overrides": [
     {
-      "include": ["*.test.ts"],
+      "includes": ["**/*.test.ts"],
       "javascript": {
         "globals": [
           "afterEach",
@@ -28,18 +28,20 @@
     }
   ],
   "files": {
-    "ignore": ["dist/", "lib/", "node_modules/", "jest.config.js", "demo/"]
+    "includes": ["./*", "./src/**/*", ".github/**/*"]
   },
-  "organizeImports": { "enabled": true },
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {
     "enabled": true,
     "rules": {
       "recommended": false,
       "complexity": {
         "noExtraBooleanCast": "error",
-        "noMultipleSpacesInRegularExpressionLiterals": "error",
         "noStaticOnlyClass": "error",
-        "noUselessConstructor": "error"
+        "noUselessConstructor": "error",
+        "noAdjacentSpacesInRegex": "error",
+        "noArguments": "error",
+        "noCommaOperator": "error"
       },
       "correctness": {
         "noConstAssign": "error",
@@ -49,7 +51,6 @@
         "noGlobalObjectCalls": "error",
         "noInnerDeclarations": "error",
         "noInvalidConstructorSuper": "error",
-        "noNewSymbol": "error",
         "noSelfAssign": "error",
         "noSwitchDeclarations": "error",
         "noUndeclaredVariables": "error",
@@ -59,15 +60,14 @@
         "noUnusedLabels": "error",
         "noUnusedVariables": "error",
         "useIsNan": "error",
-        "useYield": "error"
+        "useYield": "error",
+        "noInvalidBuiltinInstantiation": "error",
+        "useValidTypeof": "error"
       },
       "style": {
-        "noArguments": "error",
-        "noCommaOperator": "error",
         "noInferrableTypes": "error",
         "noNamespace": "error",
         "noNonNullAssertion": "warn",
-        "noVar": "error",
         "useConsistentArrayType": "error",
         "useConst": "error",
         "useForOf": "warn",
@@ -80,7 +80,6 @@
         "noCatchAssign": "error",
         "noClassAssign": "error",
         "noCompareNegZero": "error",
-        "noConsoleLog": "error",
         "noControlCharactersInRegex": "error",
         "noDebugger": "error",
         "noDoubleEquals": "error",
@@ -97,7 +96,8 @@
         "noMisleadingInstantiator": "error",
         "noRedeclare": "error",
         "noUnsafeNegation": "error",
-        "useValidTypeof": "error"
+        "noVar": "error",
+        "noConsole": { "level": "error", "options": { "allow": ["log"] } }
       }
     }
   },
