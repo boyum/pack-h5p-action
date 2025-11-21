@@ -20,7 +20,7 @@ jobs:
       pull-requests: write
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Install Node.js dependencies
         uses: bahmutov/npm-install@v1
