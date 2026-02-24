@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/boyum/pack-h5p-action#readme",
   "dependencies": {
-    "@actions/artifact": "^4.0.0",
+    "@actions/artifact": "^6.1.0",
     "@actions/core": "^1.11.1",
     "@actions/exec": "^3.0.0",
     "@actions/github": "^6.0.0",
