@@ -47,7 +47,7 @@ async function run(): Promise<void> {
     } else {
       setFailed(
         `The provided H5P dependency file '${dependencyListFilePath}' could not be found.
-         If it doesn't exist, please remove \`${options.depListFilePath}\` from the configuration.`,
+         If it doesn't exist, please remove \\"${options.depListFilePath}\\" from the configuration.`,
       );
       return;
     }
@@ -74,6 +74,20 @@ async function run(): Promise<void> {
       setFailed((error as Object).toString());
     }
   }
+}
+
+async function packH5P(
+  projectName: string,
+  filename: string,
+  rootDir: string,
+): Promise<void> {
+  info(`Packing H5P into file '${filename}'`);
+
+  await exec("npm install -g h5p-cli");
+  await exec(`h5p utils pack -r ${projectName} ${filename}`, undefined, {
+    cwd: rootDir,
+  });
+  await exec(`h5p validate ${filename}`, undefined, { cwd: rootDir });
 }
 
 async function moveAllFilesButDirectoryIntoDirectory(
@@ -147,6 +161,18 @@ async function cloneDependencies(
   );
 }
 
+async function npmBuildProjects(rootDir: string): Promise<void[]> {
+  const projects = await fs.promises.readdir(rootDir);
+  info(`Building projects: ${projects}`);
+
+  return Promise.all(
+    projects.map(async project => {
+      const projectPath = `${rootDir}/${project}`;
+      return npmBuildProject(projectPath);
+    }),
+  );
+}
+
 async function npmBuildProject(projectPath: string): Promise<void> {
   const isNodeProject = fs.existsSync(`${projectPath}/package.json`);
   if (isNodeProject) {
@@ -166,18 +192,6 @@ async function npmBuildProject(projectPath: string): Promise<void> {
   } else {
     return Promise.resolve();
   }
-}
-
-async function npmBuildProjects(rootDir: string): Promise<void[]> {
-  const projects = await fs.promises.readdir(rootDir);
-  info(`Building projects: ${projects}`);
-
-  return Promise.all(
-    projects.map(async project => {
-      const projectPath = `${rootDir}/${project}`;
-      return npmBuildProject(projectPath);
-    }),
-  );
 }
 
 async function getLibraryContents(
@@ -201,20 +215,6 @@ async function getLibraryContents(
     "utf-8",
   );
   return JSON.parse(libraryJson) as H5PLibrary;
-}
-
-async function packH5P(
-  projectName: string,
-  filename: string,
-  rootDir: string,
-): Promise<void> {
-  info(`Packing H5P into file '${filename}'`);
-
-  await exec("npm install -g h5p");
-  await exec(`h5p pack -r ${projectName} ${filename}`, undefined, {
-    cwd: rootDir,
-  });
-  await exec(`h5p validate ${filename}`, undefined, { cwd: rootDir });
 }
 
 async function archiveH5PPack(
