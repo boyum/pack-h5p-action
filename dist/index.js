@@ -121670,7 +121670,7 @@ async function run() {
         }
         else {
             (0,core.setFailed)(`The provided H5P dependency file '${dependencyListFilePath}' could not be found.
-         If it doesn't exist, please remove \`${options.depListFilePath}\` from the configuration.`);
+         If it doesn't exist, please remove \\"${options.depListFilePath}\\" from the configuration.`);
             return;
         }
         await npmBuildProjects(rootDir);
@@ -121693,6 +121693,14 @@ async function run() {
             (0,core.setFailed)(error.toString());
         }
     }
+}
+async function packH5P(projectName, filename, rootDir) {
+    (0,core.info)(`Packing H5P into file '${filename}'`);
+    await exec("npm install -g h5p-cli");
+    await exec(`h5p utils pack -r ${projectName} ${filename}`, undefined, {
+        cwd: rootDir,
+    });
+    await exec(`h5p validate ${filename}`, undefined, { cwd: rootDir });
 }
 async function moveAllFilesButDirectoryIntoDirectory(rootDir, destinationDirectory) {
     const contents = await external_node_fs_.promises.readdir(rootDir);
@@ -121731,6 +121739,14 @@ async function cloneDependencies(projectName, rootDir, dependencyListFilePath) {
         return Promise.reject(error);
     })));
 }
+async function npmBuildProjects(rootDir) {
+    const projects = await external_node_fs_.promises.readdir(rootDir);
+    (0,core.info)(`Building projects: ${projects}`);
+    return Promise.all(projects.map(async (project) => {
+        const projectPath = `${rootDir}/${project}`;
+        return npmBuildProject(projectPath);
+    }));
+}
 async function npmBuildProject(projectPath) {
     const isNodeProject = external_node_fs_.existsSync(`${projectPath}/package.json`);
     if (isNodeProject) {
@@ -121751,14 +121767,6 @@ async function npmBuildProject(projectPath) {
         return Promise.resolve();
     }
 }
-async function npmBuildProjects(rootDir) {
-    const projects = await external_node_fs_.promises.readdir(rootDir);
-    (0,core.info)(`Building projects: ${projects}`);
-    return Promise.all(projects.map(async (project) => {
-        const projectPath = `${rootDir}/${project}`;
-        return npmBuildProject(projectPath);
-    }));
-}
 async function getLibraryContents(rootDir, projectName) {
     const projectDir = external_node_path_.join(rootDir, projectName);
     (0,core.info)("Fetching library contents");
@@ -121772,14 +121780,6 @@ async function getLibraryContents(rootDir, projectName) {
     }
     const libraryJson = (await external_node_fs_.promises.readFile(libraryPath)).toString("utf-8");
     return JSON.parse(libraryJson);
-}
-async function packH5P(projectName, filename, rootDir) {
-    (0,core.info)(`Packing H5P into file '${filename}'`);
-    await exec("npm install -g h5p");
-    await exec(`h5p pack -r ${projectName} ${filename}`, undefined, {
-        cwd: rootDir,
-    });
-    await exec(`h5p validate ${filename}`, undefined, { cwd: rootDir });
 }
 async function archiveH5PPack(filename, rootDir) {
     (0,core.info)(`Archiving H5P into file '${filename}'`);
